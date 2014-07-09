@@ -1,0 +1,4 @@
+threadgab_login:
+    resource: "@ThreadgabLoginBundle/Resources/config/routing.yml"
+    prefix:   /
+
