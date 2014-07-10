@@ -1,7 +1,7 @@
 threadgab_login_homepage:
     path:     /
-    defaults: { _controller: ThreadgabLoginBundle:Default:index }
+    defaults: { _controller: ThreadgabLoginBundle:Login:index }
 
 threadgab_login_redirect:
     path:     /redirect
-    defaults: { _controller: ThreadgabLoginBundle:Default:getsession }
+    defaults: { _controller: ThreadgabLoginBundle:Login:getsession }
