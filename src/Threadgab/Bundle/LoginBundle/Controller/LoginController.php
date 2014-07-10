@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Facebook\FacebookSession;
 use Facebook\FacebookRedirectLoginHelper;
 use Symfony\Component\HttpFoundation\Response;
-//use Facebook;
 
 ini_set('display_errors',"1");
 
@@ -26,9 +25,16 @@ class LoginController extends Controller
     {
     	//Redirect to Facebook login URL for logging in
     	$helper = new FacebookRedirectLoginHelper(self::REDIRECT_URL);
-		$loginUrl = $helper->getLoginUrl(array( 'email', 'user_friends' ));
+		$loginUrl = $helper->getLoginUrl(array( 'email', 'user_friends', 'public_profile' ));
 
-		return new Response("<a href='".$loginUrl."'>Login using Facebook</a>");
+		$content = $this->renderView(
+		    'ThreadgabLoginBundle:Login:index.html.twig',
+		    array('loginUrl' => $loginUrl)
+		);
+
+		return new Response($content);
+
+		//return new Response("<a href='".$loginUrl."'>Login using Facebook</a>");
     }
 
 	public function getsessionAction()
