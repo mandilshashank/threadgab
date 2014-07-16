@@ -5,3 +5,7 @@ threadgab_login_homepage:
 threadgab_login_redirect:
     path:     /redirect
     defaults: { _controller: ThreadgabLoginBundle:Login:getsession }
+
+threadgab_userinfo_redirect:
+    path:     /userinfo
+    defaults: { _controller: ThreadgabLoginBundle:Login:showform }
