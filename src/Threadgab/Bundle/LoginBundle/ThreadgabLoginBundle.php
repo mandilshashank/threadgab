@@ -30,7 +30,7 @@ class ThreadgabLoginBundle extends Bundle
    	public static function getSession() {
    		$helper = new FacebookRedirectLoginHelper(self::REDIRECT_URL);
 
-		//Get the session id for the user
+		  //Get the session id for the user
 	  	$session = $helper->getSessionFromRedirect();
 
 	  	return $session;

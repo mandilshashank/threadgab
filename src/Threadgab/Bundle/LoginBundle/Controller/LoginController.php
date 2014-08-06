@@ -9,6 +9,7 @@ use Facebook\GraphUser;
 use Facebook\FacebookRedirectLoginHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
+use Threadgab\Bundle\LoginBundle\User;
 
 if(!isset($_SESSION)) 
 { 
@@ -38,7 +39,7 @@ class LoginController extends Controller
 
 			//Get the session id for the user
 		  	$session = ThreadgabLoginBundle::getSession();
-		  	$_SESSION['fb_token'] = $session->getToken();
+		  	
 		  	//If we dont get an exception here it means that the sessoin has been active and we are
 		  	//now ready to redirect the user either to the user information page or to the main 
 		  	//discussion forum.
@@ -48,7 +49,7 @@ class LoginController extends Controller
 		  	//If they already exist to transfer them to the forum page otherwise we transfer them to the
 		  	//user information page.
 		  	if($session) {
-
+		  		$_SESSION['fb_token'] = $session->getToken();	
 				try {
 					//Redirect to a link here with the session variable using generateUrl
 
@@ -78,7 +79,35 @@ class LoginController extends Controller
     {
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
-    		return new Response($session->getToken());
+    		
+    		$user = new User();
+
+    		$user_profile = (new FacebookRequest(
+		      $session, 'GET', '/me'
+		    ))->execute()->getGraphObject(GraphUser::className());
+
+    		//This is the facebook Id. This Id will be used for matching the user to
+    		// the Threadgab Id when the user logs in through facebook.	
+	        $user->setFacebookId($user_profile->getId());
+	        
+	        //This Id is to be generated whenever the user creates his/her profile
+	        //for the first time with Threadgab
+	        $user->setThreadgabId("SomeThreadGabId");
+
+	        //
+
+
+	        $form = $this->createFormBuilder($user)
+	            ->add('emailId', 'text', array('label' => 'Email Id : ', 'attr' => array('class' => 'form-control')))
+	            ->add('zipcode', 'text', array('label' => 'Zip Code : ', 'attr' => array('class' => 'form-control')))
+	            ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
+	            ->getForm();
+
+	        return $this->render('ThreadgabLoginBundle:Login:userinfo.html.twig', array(
+	            'form' => $form->createView()
+	        ));
+			//return new Response("available");
+
     	} else {
     		return new Response("Not available");
     	}
