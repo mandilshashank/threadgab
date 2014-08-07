@@ -1,0 +1,19 @@
+Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser:
+    type: entity
+    table: threadgabuser
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        facebookId:
+            type: string
+            length: '50'
+        emailId:
+            type: string
+            length: '100'
+        zipcode:
+            type: integer
+    lifecycleCallbacks: {  }

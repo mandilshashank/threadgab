@@ -9,7 +9,8 @@ use Facebook\GraphUser;
 use Facebook\FacebookRedirectLoginHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
-use Threadgab\Bundle\LoginBundle\User;
+use Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser;
+use Symfony\Component\HttpFoundation\Request;
 
 if(!isset($_SESSION)) 
 { 
@@ -75,38 +76,46 @@ class LoginController extends Controller
 		return new Response('Session is not found');
     }  
 
-    public function showformAction()
+    public function showformAction(Request $request)
     {
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
-    		
-    		$user = new User();
 
     		$user_profile = (new FacebookRequest(
 		      $session, 'GET', '/me'
 		    ))->execute()->getGraphObject(GraphUser::className());
 
+    		//TBD
+    		//Check in database if the user with this FacebookId already
+    		//exists, other wise create a new user
+
+    		$user = new ThreadgabUser();
+
     		//This is the facebook Id. This Id will be used for matching the user to
     		// the Threadgab Id when the user logs in through facebook.	
 	        $user->setFacebookId($user_profile->getId());
-	        
-	        //This Id is to be generated whenever the user creates his/her profile
-	        //for the first time with Threadgab
-	        $user->setThreadgabId("SomeThreadGabId");
-
-	        //
-
 
 	        $form = $this->createFormBuilder($user)
-	            ->add('emailId', 'text', array('label' => 'Email Id : ', 'attr' => array('class' => 'form-control')))
-	            ->add('zipcode', 'text', array('label' => 'Zip Code : ', 'attr' => array('class' => 'form-control')))
+	            ->add('emailId', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
+	            ->add('zipcode', 'text', array('label' => 'Zip Code', 'attr' => array('class' => 'form-control')))
 	            ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
 	            ->getForm();
 
+	        $form->handleRequest($request);
+
+		    if ($form->isValid()) {
+		        //Persist the user to the database
+		        $em = $this->getDoctrine()->getManager();
+			    $em->persist($user);
+			    $em->flush();
+
+			    return new Response("Added user to the database");
+		    }
+	        
+	        //Render the form
 	        return $this->render('ThreadgabLoginBundle:Login:userinfo.html.twig', array(
-	            'form' => $form->createView()
+	           'form' => $form->createView()
 	        ));
-			//return new Response("available");
 
     	} else {
     		return new Response("Not available");
