@@ -89,33 +89,46 @@ class LoginController extends Controller
     		//Check in database if the user with this FacebookId already
     		//exists, other wise create a new user
 
-    		$user = new ThreadgabUser();
+			$repository = $this->getDoctrine()->getRepository('ThreadgabLoginBundle:ThreadgabUser');
 
-    		//This is the facebook Id. This Id will be used for matching the user to
-    		// the Threadgab Id when the user logs in through facebook.	
-	        $user->setFacebookId($user_profile->getId());
+			$query = $repository->createQueryBuilder('p')
+							->where('p.facebookId = :facebookId')
+							->setParameter('facebookId', (string)$user_profile->getId())
+							->getQuery();
 
-	        $form = $this->createFormBuilder($user)
-	            ->add('emailId', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
-	            ->add('zipcode', 'text', array('label' => 'Zip Code', 'attr' => array('class' => 'form-control')))
-	            ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
-	            ->getForm();
+			$users = $query->getResult();
 
-	        $form->handleRequest($request);
+			if(!$users) {
+				$user = new ThreadgabUser();
 
-		    if ($form->isValid()) {
-		        //Persist the user to the database
-		        $em = $this->getDoctrine()->getManager();
-			    $em->persist($user);
-			    $em->flush();
+	    		//This is the facebook Id. This Id will be used for matching the user to
+	    		// the Threadgab Id when the user logs in through facebook.	
+		        $user->setFacebookId($user_profile->getId());
 
-			    return new Response("Added user to the database");
-		    }
-	        
-	        //Render the form
-	        return $this->render('ThreadgabLoginBundle:Login:userinfo.html.twig', array(
-	           'form' => $form->createView()
-	        ));
+		        $form = $this->createFormBuilder($user)
+		            ->add('emailId', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
+		            ->add('zipcode', 'text', array('label' => 'Zip Code', 'attr' => array('class' => 'form-control')))
+		            ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
+		            ->getForm();
+
+		        $form->handleRequest($request);
+
+			    if ($form->isValid()) {
+			        //Persist the user to the database
+			        $em = $this->getDoctrine()->getManager();
+				    $em->persist($user);
+				    $em->flush();
+
+				    return new Response("Added user to the database");
+			    }
+		        
+		        //Render the form
+		        return $this->render('ThreadgabLoginBundle:Login:userinfo.html.twig', array(
+		           'form' => $form->createView()
+		        ));
+			} else {
+				return new Response("User already exists");
+			}
 
     	} else {
     		return new Response("Not available");
