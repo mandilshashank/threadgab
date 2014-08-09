@@ -127,6 +127,7 @@ class LoginController extends Controller
 		           'form' => $form->createView()
 		        ));
 			} else {
+				//User already exists. Redirect to the main page of the forum.
 				return new Response("User already exists");
 			}
 

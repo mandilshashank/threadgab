@@ -1,3 +1,7 @@
+portal:
+    resource: "@PortalBundle/Resources/config/routing.yml"
+    prefix:   /
+
 threadgab_login:
     resource: "@ThreadgabLoginBundle/Resources/config/routing.yml"
     prefix:   /
