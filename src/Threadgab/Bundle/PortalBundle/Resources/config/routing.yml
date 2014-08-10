@@ -1,3 +1,15 @@
 portal_homepage:
     path:     /portal/main
-    defaults: { _controller: PortalBundle:Portal:index }
+    defaults: { _controller: PortalBundle:Portal:main }
+
+portal_community:
+    path:     /portal/community
+    defaults: { _controller: PortalBundle:Portal:community }
+
+portal_global:
+    path:     /portal/global
+    defaults: { _controller: PortalBundle:Portal:global }
+
+portal_groups:
+    path:     /portal/groups
+    defaults: { _controller: PortalBundle:Portal:groups }

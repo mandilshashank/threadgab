@@ -17,7 +17,7 @@ ini_set('display_errors',"1");
 
 class PortalController extends Controller
 {
-    public function indexAction()
+    public function mainAction()
     {
     	//Get the user data using the fb_token session variable
 
@@ -28,10 +28,70 @@ class PortalController extends Controller
 		      $session, 'GET', '/me'
 		    ))->execute()->getGraphObject(GraphUser::className());
 		
-    		return $this->render('PortalBundle:Portal:index.html.twig', array('name' => $user_profile->getFirstName()));
+    		return $this->render('PortalBundle:Portal:main.html.twig', array('name' => $user_profile->getFirstName()));
 		} else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Main portal Page.");
 		}      
+    }
+
+    public function communityAction()
+    {
+    	//Write code for the community threads to be shown here  
+
+    	//Get the user data using the fb_token session variable
+
+    	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+    	if($session) {
+
+    		$user_profile = (new FacebookRequest(
+		      $session, 'GET', '/me'
+		    ))->execute()->getGraphObject(GraphUser::className());
+		
+    		return $this->render('PortalBundle:Portal:community.html.twig', array('name' => $user_profile->getFirstName()));
+		} else {
+			//Session not found. Take to a common error page
+			return new Response("Session not found at the Main portal Page.");
+		}  
+    }
+
+    public function globalAction()
+    {
+    	//Write code for the global threads to be shown here
+
+    	//Get the user data using the fb_token session variable
+
+    	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+    	if($session) {
+
+    		$user_profile = (new FacebookRequest(
+		      $session, 'GET', '/me'
+		    ))->execute()->getGraphObject(GraphUser::className());
+		
+    		return $this->render('PortalBundle:Portal:global.html.twig', array('name' => $user_profile->getFirstName()));
+		} else {
+			//Session not found. Take to a common error page
+			return new Response("Session not found at the Main portal Page.");
+		}  
+    }
+
+    public function groupsAction()
+    {
+    	//Write code for the groups to be shown here
+
+    	//Get the user data using the fb_token session variable
+
+    	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+    	if($session) {
+
+    		$user_profile = (new FacebookRequest(
+		      $session, 'GET', '/me'
+		    ))->execute()->getGraphObject(GraphUser::className());
+		
+    		return $this->render('PortalBundle:Portal:groups.html.twig', array('name' => $user_profile->getFirstName()));
+		} else {
+			//Session not found. Take to a common error page
+			return new Response("Session not found at the Main portal Page.");
+		}  
     }
 }
