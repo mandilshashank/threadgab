@@ -1,4 +1,4 @@
-Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser:
+Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser:
     type: entity
     table: threadgab_user
     id:

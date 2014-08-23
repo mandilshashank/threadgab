@@ -6,28 +6,49 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabUser
+ *
+ * @ORM\Table(name="threadgab_user")
+ * @ORM\Entity
  */
 class ThreadgabUser
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="facebookId", type="string", length=50, nullable=false)
      */
-    private $facebookId;
+    private $facebookid;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="emailId", type="string", length=100, nullable=false)
      */
-    private $emailId;
+    private $emailid;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="zipcode", type="integer", nullable=false)
      */
     private $zipcode;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="creationDate", type="datetime", nullable=false)
+     */
+    private $creationdate;
+
 
 
     /**
@@ -41,49 +62,49 @@ class ThreadgabUser
     }
 
     /**
-     * Set facebookId
+     * Set facebookid
      *
-     * @param string $facebookId
+     * @param string $facebookid
      * @return ThreadgabUser
      */
-    public function setFacebookId($facebookId)
+    public function setFacebookid($facebookid)
     {
-        $this->facebookId = $facebookId;
+        $this->facebookid = $facebookid;
 
         return $this;
     }
 
     /**
-     * Get facebookId
+     * Get facebookid
      *
      * @return string 
      */
-    public function getFacebookId()
+    public function getFacebookid()
     {
-        return $this->facebookId;
+        return $this->facebookid;
     }
 
     /**
-     * Set emailId
+     * Set emailid
      *
-     * @param string $emailId
+     * @param string $emailid
      * @return ThreadgabUser
      */
-    public function setEmailId($emailId)
+    public function setEmailid($emailid)
     {
-        $this->emailId = $emailId;
+        $this->emailid = $emailid;
 
         return $this;
     }
 
     /**
-     * Get emailId
+     * Get emailid
      *
      * @return string 
      */
-    public function getEmailId()
+    public function getEmailid()
     {
-        return $this->emailId;
+        return $this->emailid;
     }
 
     /**
@@ -107,5 +128,28 @@ class ThreadgabUser
     public function getZipcode()
     {
         return $this->zipcode;
+    }
+
+    /**
+     * Set creationdate
+     *
+     * @param \DateTime $creationdate
+     * @return ThreadgabUser
+     */
+    public function setCreationdate($creationdate)
+    {
+        $this->creationdate = $creationdate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationdate
+     *
+     * @return \DateTime 
+     */
+    public function getCreationdate()
+    {
+        return $this->creationdate;
     }
 }
