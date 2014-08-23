@@ -1,0 +1,65 @@
+Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread:
+    type: entity
+    table: threadgab_thread
+    indexes:
+        fk_thd_creator_id_idx:
+            columns:
+                - thd_creator_id
+    id:
+        id:
+            type: bigint
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        thdSubject:
+            type: string
+            nullable: false
+            length: 200
+            fixed: false
+            comment: ''
+            column: thd_subject
+        thdDesc:
+            type: string
+            nullable: false
+            length: 5000
+            fixed: false
+            comment: ''
+            column: thd_desc
+        isPoll:
+            type: boolean
+            nullable: false
+            comment: ''
+            default: '0'
+            column: is_poll
+        createdAt:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: created_at
+        updatedAt:
+            type: datetime
+            nullable: true
+            comment: ''
+            column: updated_at
+        thdType:
+            type: string
+            nullable: false
+            length: 10
+            fixed: false
+            comment: ''
+            column: thd_type
+    manyToOne:
+        thdCreator:
+            targetEntity: ThreadgabUser
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                thd_creator_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

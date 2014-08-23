@@ -28,7 +28,7 @@ class PortalController extends Controller
 		      $session, 'GET', '/me'
 		    ))->execute()->getGraphObject(GraphUser::className());
 		
-    		return $this->render('PortalBundle:Portal:main.html.twig', array('name' => $user_profile->getFirstName()));
+    		return $this->render('PortalBundle:Portal:main.html.twig', array('name' => (string)$user_profile->getFirstName()));
 		} else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Main portal Page.");
@@ -47,11 +47,11 @@ class PortalController extends Controller
     		$user_profile = (new FacebookRequest(
 		      $session, 'GET', '/me'
 		    ))->execute()->getGraphObject(GraphUser::className());
-		
+
     		return $this->render('PortalBundle:Portal:community.html.twig', array('name' => $user_profile->getFirstName()));
-		} else {
+        } else {
 			//Session not found. Take to a common error page
-			return new Response("Session not found at the Main portal Page.");
+			return new Response("Session not found at the Community portal Page.");
 		}  
     }
 
@@ -71,7 +71,7 @@ class PortalController extends Controller
     		return $this->render('PortalBundle:Portal:global.html.twig', array('name' => $user_profile->getFirstName()));
 		} else {
 			//Session not found. Take to a common error page
-			return new Response("Session not found at the Main portal Page.");
+			return new Response("Session not found at the Global portal Page.");
 		}  
     }
 
@@ -91,7 +91,7 @@ class PortalController extends Controller
     		return $this->render('PortalBundle:Portal:groups.html.twig', array('name' => $user_profile->getFirstName()));
 		} else {
 			//Session not found. Take to a common error page
-			return new Response("Session not found at the Main portal Page.");
+			return new Response("Session not found at the Groups portal Page.");
 		}  
     }
 }

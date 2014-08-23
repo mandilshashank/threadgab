@@ -1,19 +1,39 @@
-Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser:
+Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser:
     type: entity
-    table: threadgabuser
+    table: threadgab_user
     id:
         id:
-            type: integer
+            type: bigint
+            nullable: false
+            unsigned: false
+            comment: ''
             id: true
             generator:
-                strategy: AUTO
+                strategy: IDENTITY
     fields:
-        facebookId:
+        facebookid:
             type: string
-            length: '50'
-        emailId:
+            nullable: false
+            length: 50
+            fixed: false
+            comment: ''
+            column: facebookId
+        emailid:
             type: string
-            length: '100'
+            nullable: false
+            length: 100
+            fixed: false
+            comment: ''
+            column: emailId
         zipcode:
             type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+        creationdate:
+            type: datetime
+            nullable: false
+            comment: ''
+            default: CURRENT_TIMESTAMP
+            column: creationDate
     lifecycleCallbacks: {  }

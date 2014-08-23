@@ -1,0 +1,62 @@
+Threadgab\Bundle\PortalBundle\Entity\ThreadgabPollHistory:
+    type: entity
+    table: threadgab_poll_history
+    indexes:
+        fk_answer_id_idx:
+            columns:
+                - poll_answer_id
+        fk_user_id_idx:
+            columns:
+                - user_id
+        fk_question_id_idx:
+            columns:
+                - poll_question_id
+    id:
+        id:
+            type: bigint
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        createdAt:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: created_at
+        updatedAt:
+            type: datetime
+            nullable: true
+            comment: ''
+            column: updated_at
+    manyToOne:
+        pollAnswer:
+            targetEntity: ThreadgabPollAnswers
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                poll_answer_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+        pollQuestion:
+            targetEntity: ThreadgabPoll
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                poll_question_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+        user:
+            targetEntity: ThreadgabUser
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                user_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

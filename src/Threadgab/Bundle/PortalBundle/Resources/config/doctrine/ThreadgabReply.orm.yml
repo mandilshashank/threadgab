@@ -1,0 +1,63 @@
+Threadgab\Bundle\PortalBundle\Entity\ThreadgabReply:
+    type: entity
+    table: threadgab_reply
+    indexes:
+        fk_reply_user_id_idx:
+            columns:
+                - reply_user
+        fk_reply_thd_id_idx:
+            columns:
+                - thd_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        replyTo:
+            type: bigint
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: reply_to
+        replyData:
+            type: string
+            nullable: false
+            length: 5000
+            fixed: false
+            comment: ''
+            column: reply_data
+        createdAt:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: created_at
+        updatedAt:
+            type: datetime
+            nullable: true
+            comment: ''
+            column: updated_at
+    manyToOne:
+        thd:
+            targetEntity: ThreadgabThread
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                thd_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+        replyUser:
+            targetEntity: ThreadgabUser
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                reply_user:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }
