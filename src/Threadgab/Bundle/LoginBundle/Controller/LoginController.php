@@ -92,7 +92,7 @@ class LoginController extends Controller
 			$repository = $this->getDoctrine()->getRepository('ThreadgabLoginBundle:ThreadgabUser');
 
 			$query = $repository->createQueryBuilder('p')
-							->where('p.facebookId = :facebookId')
+							->where('p.facebookid = :facebookId')
 							->setParameter('facebookId', (string)$user_profile->getId())
 							->getQuery();
 
@@ -106,7 +106,7 @@ class LoginController extends Controller
 		        $user->setFacebookId($user_profile->getId());
 
 		        $form = $this->createFormBuilder($user)
-		            ->add('emailId', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
+		            ->add('emailid', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
 		            ->add('zipcode', 'text', array('label' => 'Zip Code', 'attr' => array('class' => 'form-control')))
 		            ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
 		            ->getForm();
