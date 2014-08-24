@@ -3,6 +3,7 @@
 namespace Threadgab\Bundle\PortalBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
@@ -24,11 +25,31 @@ class PortalController extends Controller
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
 
-    		$user_profile = (new FacebookRequest(
-		      $session, 'GET', '/me'
-		    ))->execute()->getGraphObject(GraphUser::className());
-		
-    		return $this->render('PortalBundle:Portal:main.html.twig', array('name' => (string)$user_profile->getFirstName()));
+            $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
+		    $user_friends = ThreadgabLoginBundle::getFacebookFriends($session)
+                                    ->getProperty('data')->asArray();  
+
+
+            $facebook_ids = array();
+        
+            //Get the facebookid entry for each friend matching to the friend id
+            foreach ($user_friends as $friend){
+                array_push($facebook_ids, $friend->id);
+            }
+
+            //Add self facebookid to the list
+            array_push($facebook_ids, $user_profile->getId());
+
+            //Execute the query to select the thread entities which are created by users with
+            //the facebook ids present in the above facebook_ids array
+
+
+
+            //return new Response(implode('","', $facebook_ids));
+
+            //Render the friends thread for each of the friends and yourself
+    		return $this->render('PortalBundle:Portal:main.html.twig');
+
 		} else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Main portal Page.");
@@ -44,9 +65,7 @@ class PortalController extends Controller
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
 
-    		$user_profile = (new FacebookRequest(
-		      $session, 'GET', '/me'
-		    ))->execute()->getGraphObject(GraphUser::className());
+    		$user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
 
     		return $this->render('PortalBundle:Portal:community.html.twig', array('name' => $user_profile->getFirstName()));
         } else {
@@ -64,9 +83,7 @@ class PortalController extends Controller
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
 
-    		$user_profile = (new FacebookRequest(
-		      $session, 'GET', '/me'
-		    ))->execute()->getGraphObject(GraphUser::className());
+    		$user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
 		
     		return $this->render('PortalBundle:Portal:global.html.twig', array('name' => $user_profile->getFirstName()));
 		} else {
@@ -84,9 +101,7 @@ class PortalController extends Controller
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
 
-    		$user_profile = (new FacebookRequest(
-		      $session, 'GET', '/me'
-		    ))->execute()->getGraphObject(GraphUser::className());
+    		$user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
 		
     		return $this->render('PortalBundle:Portal:groups.html.twig', array('name' => $user_profile->getFirstName()));
 		} else {

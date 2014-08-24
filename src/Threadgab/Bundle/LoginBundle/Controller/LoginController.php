@@ -81,9 +81,7 @@ class LoginController extends Controller
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
 
-    		$user_profile = (new FacebookRequest(
-		      $session, 'GET', '/me'
-		    ))->execute()->getGraphObject(GraphUser::className());
+    		 $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
 
     		//TBD
     		//Check in database if the user with this FacebookId already
@@ -104,6 +102,7 @@ class LoginController extends Controller
 	    		//This is the facebook Id. This Id will be used for matching the user to
 	    		// the Threadgab Id when the user logs in through facebook.	
 		        $user->setFacebookId($user_profile->getId());
+		        $user->setCreationDate(date_create(date("Y-m-d H:i:s", time())));
 
 		        $form = $this->createFormBuilder($user)
 		            ->add('emailid', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
