@@ -60,9 +60,9 @@ class ThreadgabReply
     private $thd;
 
     /**
-     * @var \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser
+     * @var \ThreadgabBundleoginbundlentityThreadgabUser
      *
-     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser")
+     * @ORM\ManyToOne(targetEntity="ThreadgabBundleoginbundlentityThreadgabUser")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="reply_user", referencedColumnName="id")
      * })
@@ -199,10 +199,10 @@ class ThreadgabReply
     /**
      * Set replyUser
      *
-     * @param \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser $replyUser
+     * @param Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $replyUser
      * @return ThreadgabReply
      */
-    public function setReplyUser(\Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser $replyUser = null)
+    public function setReplyUser(Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $replyUser = null)
     {
         $this->replyUser = $replyUser;
 
@@ -212,7 +212,7 @@ class ThreadgabReply
     /**
      * Get replyUser
      *
-     * @return \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser 
+     * @return Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser 
      */
     public function getReplyUser()
     {

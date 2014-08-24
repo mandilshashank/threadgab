@@ -64,9 +64,9 @@ class ThreadgabThread
     private $thdType;
 
     /**
-     * @var \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser
+     * @var \Threadgab/Bundle/oginbundle/ntity/ThreadgabUser
      *
-     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser")
+     * @ORM\ManyToOne(targetEntity="Threadgab/Bundle/oginbundle/ntity/ThreadgabUser")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="thd_creator_id", referencedColumnName="id")
      * })
@@ -226,10 +226,10 @@ class ThreadgabThread
     /**
      * Set thdCreator
      *
-     * @param \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser $thdCreator
+     * @param Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $thdCreator
      * @return ThreadgabThread
      */
-    public function setThdCreator(\Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser $thdCreator = null)
+    public function setThdCreator(Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $thdCreator = null)
     {
         $this->thdCreator = $thdCreator;
 
@@ -239,7 +239,7 @@ class ThreadgabThread
     /**
      * Get thdCreator
      *
-     * @return \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser 
+     * @return Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser
      */
     public function getThdCreator()
     {

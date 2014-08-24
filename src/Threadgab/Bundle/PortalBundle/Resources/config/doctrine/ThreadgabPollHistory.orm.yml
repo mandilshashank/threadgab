@@ -51,7 +51,7 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabPollHistory:
                     referencedColumnName: id
             orphanRemoval: false
         user:
-            targetEntity: ThreadgabUser
+            targetEntity: Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser
             cascade: {  }
             mappedBy: null
             inversedBy: null

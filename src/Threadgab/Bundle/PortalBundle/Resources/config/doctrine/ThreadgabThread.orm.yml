@@ -54,7 +54,7 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread:
             column: thd_type
     manyToOne:
         thdCreator:
-            targetEntity: ThreadgabUser
+            targetEntity: Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser
             cascade: {  }
             mappedBy: null
             inversedBy: null

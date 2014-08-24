@@ -56,9 +56,9 @@ class ThreadgabPollHistory
     private $pollQuestion;
 
     /**
-     * @var \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser
+     * @var \ThreadgabBundleoginbundlentityThreadgabUser
      *
-     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser")
+     * @ORM\ManyToOne(targetEntity="ThreadgabBundleoginbundlentityThreadgabUser")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
@@ -172,10 +172,10 @@ class ThreadgabPollHistory
     /**
      * Set user
      *
-     * @param \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser $user
+     * @param Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $user
      * @return ThreadgabPollHistory
      */
-    public function setUser(\Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser $user = null)
+    public function setUser(Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $user = null)
     {
         $this->user = $user;
 
@@ -185,7 +185,7 @@ class ThreadgabPollHistory
     /**
      * Get user
      *
-     * @return \Threadgab\Bundle\PortalBundle\Entity\ThreadgabUser 
+     * @return Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser 
      */
     public function getUser()
     {

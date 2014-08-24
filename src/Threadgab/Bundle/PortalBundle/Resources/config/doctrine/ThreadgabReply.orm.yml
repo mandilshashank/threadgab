@@ -52,7 +52,7 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabReply:
                     referencedColumnName: id
             orphanRemoval: false
         replyUser:
-            targetEntity: ThreadgabUser
+            targetEntity: Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser
             cascade: {  }
             mappedBy: null
             inversedBy: null

@@ -3,6 +3,7 @@
 namespace Threadgab\Bundle\PortalBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser;
 use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
 use Facebook\FacebookSession;
@@ -41,14 +42,21 @@ class PortalController extends Controller
             array_push($facebook_ids, $user_profile->getId());
 
             //Execute the query to select the thread entities which are created by users with
-            //the facebook ids present in the above facebook_ids array
+            //the facebook ids present in the above facebook_ids array   
 
+            $em = $this->getDoctrine()->getManager();
+            $query = $em->createQuery(
+                'SELECT t
+                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser u
+                WHERE u.facebookid in (:facebookId)
+                ORDER BY t.createdAt'
+            )->setParameter('facebookId', implode(',', $facebook_ids));
 
-
-            //return new Response(implode('","', $facebook_ids));
+            $threads = $query->getResult();
 
             //Render the friends thread for each of the friends and yourself
-    		return $this->render('PortalBundle:Portal:main.html.twig');
+    		return $this->render('PortalBundle:Portal:main.html.twig', array('threads' => $threads));
 
 		} else {
 			//Session not found. Take to a common error page
