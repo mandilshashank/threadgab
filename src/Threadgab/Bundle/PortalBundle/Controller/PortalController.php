@@ -44,16 +44,33 @@ class PortalController extends Controller
             //Execute the query to select the thread entities which are created by users with
             //the facebook ids present in the above facebook_ids array   
 
-            $em = $this->getDoctrine()->getManager();
+            //TBD : Check why this doesnt work and the following works
+            /*$em = $this->getDoctrine()->getManager();
             $query = $em->createQuery(
-                'SELECT t
+                "SELECT t
                 FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
                 INNER JOIN Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser u
-                WHERE u.facebookid in (:facebookId)
-                ORDER BY t.createdAt'
-            )->setParameter('facebookId', implode(',', $facebook_ids));
+                WITH t.thdCreator = u.id
+                WHERE u.facebookid in (:fdId)
+                ORDER BY t.createdAt"
+            );
+            $query->setParameter("fbId",implode(',', $facebook_ids));*/
+
+            $em = $this->getDoctrine()->getManager();
+            $query = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser u
+                WITH t.thdCreator = u.id
+                WHERE u.facebookid in ("
+                .implode(',', $facebook_ids).
+                ") ORDER BY t.createdAt"
+            );
 
             $threads = $query->getResult();
+
+            //return new Response($query->getSql());
+            //return new Response(sizeof($threads));    
 
             //Render the friends thread for each of the friends and yourself
     		return $this->render('PortalBundle:Portal:main.html.twig', array('threads' => $threads));
