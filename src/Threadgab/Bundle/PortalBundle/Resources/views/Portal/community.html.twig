@@ -109,12 +109,14 @@
         </thead>
         <tbody>
           <tr>
-		      	<td>Has to come from database</td>
-          	<td>from database</td>
-	        	<td>from database</td>
-          	<td>from database</td>
+          	{% for thread in threads %}
+				<td>{{thread.thdSubject}}</td>
+				<td>{{thread.createdAt|date('Y-m-d H:i:s')}}</td>
+				<td>Calc num of Replies</td>
+				<td>Calc last msg time</td>
+			{% endfor %}
           </tr>
-        </tbody>
+      	</tbody>
       </table>
 	  </div>
 

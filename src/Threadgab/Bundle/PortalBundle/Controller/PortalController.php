@@ -64,13 +64,11 @@ class PortalController extends Controller
                 WITH t.thdCreator = u.id
                 WHERE u.facebookid in ("
                 .implode(',', $facebook_ids).
-                ") ORDER BY t.createdAt"
+                ")  and t.thdType='friend' or t.thdType='global'
+                ORDER BY t.createdAt"
             );
 
             $threads = $query->getResult();
-
-            //return new Response($query->getSql());
-            //return new Response(sizeof($threads));    
 
             //Render the friends thread for each of the friends and yourself
     		return $this->render('PortalBundle:Portal:main.html.twig', array('threads' => $threads));
@@ -92,7 +90,27 @@ class PortalController extends Controller
 
     		$user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
 
-    		return $this->render('PortalBundle:Portal:community.html.twig', array('name' => $user_profile->getFirstName()));
+            $em = $this->getDoctrine()->getManager();
+            $query = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser u
+                WITH t.thdCreator = u.id
+                WHERE u.zipcode=
+                (   select v.zipcode from
+                    Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser v
+                    WHERE v.facebookid='".$user_profile->getId()."'
+                )
+                and t.thdType='community' or t.thdType='global'
+                ORDER BY t.createdAt"
+            );
+
+            $threads = $query->getResult();
+
+            //return new Response($query->getSql());
+
+    		//Render the community thread for each of the friends and yourself
+            return $this->render('PortalBundle:Portal:community.html.twig', array('threads' => $threads));
         } else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Community portal Page.");
@@ -110,7 +128,17 @@ class PortalController extends Controller
 
     		$user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
 		
-    		return $this->render('PortalBundle:Portal:global.html.twig', array('name' => $user_profile->getFirstName()));
+            $em = $this->getDoctrine()->getManager();
+            $query = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
+                WHERE t.thdType='global'
+                ORDER BY t.createdAt"
+            );
+
+            $threads = $query->getResult();
+
+    		return $this->render('PortalBundle:Portal:global.html.twig', array('threads' => $threads));
 		} else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Global portal Page.");
