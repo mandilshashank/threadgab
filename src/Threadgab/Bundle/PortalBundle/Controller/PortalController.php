@@ -171,7 +171,7 @@ class PortalController extends Controller
         if($session) {
 
             $user_profile = ThreadgabLoginBundle::getFacebookRawProfile($session)->asArray();
-            $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session)->asArray();
+            $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 100, 100)->asArray();
 
             return $this->render('PortalBundle:Portal:profilepage.html.twig', 
                 array('user_profile' => $user_profile, 

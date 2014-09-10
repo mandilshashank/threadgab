@@ -64,16 +64,16 @@ class ThreadgabLoginBundle extends Bundle
         return $user_profile;
     }
 
-    public static function getFacebookPhoto($session) {
+    public static function getFacebookPhoto($session, $height, $width) {
         $user_profile_photo = (new FacebookRequest(
           $session,
           'GET',
           '/me/picture',
           array (
             'redirect' => false,
-            'height' => '200',
+            'height' => $height,
             'type' => 'normal',
-            'width' => '200',
+            'width' => $width,
           )
         ))->execute()->getGraphObject();
 
