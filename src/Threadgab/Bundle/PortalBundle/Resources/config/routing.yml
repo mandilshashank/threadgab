@@ -13,3 +13,7 @@ portal_global:
 portal_groups:
     path:     /portal/groups
     defaults: { _controller: PortalBundle:Portal:groups }
+
+portal_profile:
+    path:     /portal/profile
+    defaults: { _controller: PortalBundle:Portal:profile }

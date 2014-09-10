@@ -22,7 +22,7 @@ class ThreadgabLoginBundle extends Bundle
    	public static function getLoginUrl() {
      		//Redirect to Facebook login URL for logging in
       	$helper = new FacebookRedirectLoginHelper(self::REDIRECT_URL);
-  		  $loginUrl = $helper->getLoginUrl(array( 'email', 'user_friends', 'public_profile' ));
+  		  $loginUrl = $helper->getLoginUrl(array('email', 'user_friends', 'public_profile', 'user_photos'));
 
   		  return $loginUrl;
    	}
@@ -54,5 +54,29 @@ class ThreadgabLoginBundle extends Bundle
         ))->execute()->getGraphObject(GraphUser::className());
     
         return $user_profile;
+    }
+
+    public static function getFacebookRawProfile($session) {
+        $user_profile = (new FacebookRequest(
+          $session, 'GET', '/me'
+        ))->execute()->getGraphObject();
+    
+        return $user_profile;
+    }
+
+    public static function getFacebookPhoto($session) {
+        $user_profile_photo = (new FacebookRequest(
+          $session,
+          'GET',
+          '/me/picture',
+          array (
+            'redirect' => false,
+            'height' => '200',
+            'type' => 'normal',
+            'width' => '200',
+          )
+        ))->execute()->getGraphObject();
+
+        return $user_profile_photo;
     }
 }

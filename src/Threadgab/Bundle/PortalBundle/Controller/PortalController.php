@@ -64,7 +64,7 @@ class PortalController extends Controller
                 WITH t.thdCreator = u.id
                 WHERE u.facebookid in ("
                 .implode(',', $facebook_ids).
-                ")  and t.thdType='friend' or t.thdType='global'
+                ")  and (t.thdType='friend' or t.thdType='global')
                 ORDER BY t.createdAt"
             );
 
@@ -101,7 +101,7 @@ class PortalController extends Controller
                     Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser v
                     WHERE v.facebookid='".$user_profile->getId()."'
                 )
-                and t.thdType='community' or t.thdType='global'
+                and (t.thdType='community' or t.thdType='global')
                 ORDER BY t.createdAt"
             );
 
@@ -119,8 +119,6 @@ class PortalController extends Controller
 
     public function globalAction()
     {
-    	//Write code for the global threads to be shown here
-
     	//Get the user data using the fb_token session variable
 
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
@@ -161,5 +159,26 @@ class PortalController extends Controller
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Groups portal Page.");
 		}  
+    }
+
+    public function profileAction()
+    {
+        //Write code for the groups to be shown here
+
+        //Get the user data using the fb_token session variable
+
+        $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+        if($session) {
+
+            $user_profile = ThreadgabLoginBundle::getFacebookRawProfile($session)->asArray();
+            $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session)->asArray();
+
+            return $this->render('PortalBundle:Portal:profilepage.html.twig', 
+                array('user_profile' => $user_profile, 
+                    'user_profile_photo' => $user_profile_photo));
+        } else {
+            //Session not found. Take to a common error page
+            return new Response("Session not found at the Groups portal Page.");
+        }  
     }
 }
