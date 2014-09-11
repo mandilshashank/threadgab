@@ -68,10 +68,18 @@ class PortalController extends Controller
                 ORDER BY t.createdAt"
             );
 
+            $query_subforum = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+                ORDER BY t.id"
+            );
+
             $threads = $query->getResult();
+            $subforum  = $query_subforum->getResult();
 
             //Render the friends thread for each of the friends and yourself
-    		return $this->render('PortalBundle:Portal:main.html.twig', array('threads' => $threads));
+    		return $this->render('PortalBundle:Portal:main.html.twig', 
+                array('threads' => $threads, 'subforum' => $subforum));
 
 		} else {
 			//Session not found. Take to a common error page
