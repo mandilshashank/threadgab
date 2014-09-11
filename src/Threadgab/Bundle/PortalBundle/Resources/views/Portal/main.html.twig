@@ -9,7 +9,7 @@
 	   	 		<div id="sidebar-wrapper" >
 			        <ul class="sidebar-nav" id="sidebar">     
 			          {% for forum in subforum %}
-			          <li><a>{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+			          <li><a href="/app_dev.php/portal/main/{{forum.subForumName}}">{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
 			          {% endfor %}
 			        </ul>
 			    </div>
@@ -22,10 +22,10 @@
 			  			<div class="navbar-inner">
 			    			<div class="container">
 			      			<ul class="nav">
-			        	    <li class="active"><a href="/app_dev.php/portal/main">Friend Threads</a></li>
-			        	  	<li><a href="/app_dev.php/portal/community">Community Threads</a>	</li>
-			            	<li><a href="/app_dev.php/portal/global">Global Threads</a></li>
-			            	<li><a href="/app_dev.php/portal/groups">Group Threads</a></li>
+			        	    <li class="active"><a href="/app_dev.php/portal/main/{{currentforum}}">Friend Threads</a></li>
+			        	  	<li><a href="/app_dev.php/portal/community/{{currentforum}}">Community Threads</a>	</li>
+			            	<li><a href="/app_dev.php/portal/global/{{currentforum}}">Global Threads</a></li>
+			            	<li><a href="/app_dev.php/portal/groups/{{currentforum}}">Group Threads</a></li>
 			          	</ul>
 			        	</div>
 			        </div>

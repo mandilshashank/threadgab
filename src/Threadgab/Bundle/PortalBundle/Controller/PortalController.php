@@ -19,7 +19,7 @@ ini_set('display_errors',"1");
 
 class PortalController extends Controller
 {
-    public function mainAction()
+    public function mainAction($currentforum)
     {
     	//Get the user data using the fb_token session variable
 
@@ -57,14 +57,18 @@ class PortalController extends Controller
             $query->setParameter("fbId",implode(',', $facebook_ids));*/
 
             $em = $this->getDoctrine()->getManager();
+            
+            //Get the friend thread for a specific user friends and a specific subforum
             $query = $em->createQuery(
                 "SELECT t
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.thdCreator = u.id
-                WHERE u.facebookid in ("
-                .implode(',', $facebook_ids).
-                ")  and (t.thdType='friend' or t.thdType='global')
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum v
+                WITH t.thdSubforum = v.id
+                WHERE u.facebookid in (".implode(',', $facebook_ids).")  
+                    and (t.thdType='friend' or t.thdType='global')
+                    and v.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
 
@@ -79,7 +83,8 @@ class PortalController extends Controller
 
             //Render the friends thread for each of the friends and yourself
     		return $this->render('PortalBundle:Portal:main.html.twig', 
-                array('threads' => $threads, 'subforum' => $subforum));
+                array('threads' => $threads, 'subforum' => $subforum,
+                    'currentforum' => $currentforum));
 
 		} else {
 			//Session not found. Take to a common error page
@@ -87,7 +92,7 @@ class PortalController extends Controller
 		}      
     }
 
-    public function communityAction()
+    public function communityAction($currentforum)
     {
     	//Write code for the community threads to be shown here  
 
@@ -104,28 +109,40 @@ class PortalController extends Controller
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.thdCreator = u.id
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum w
+                WITH t.thdSubforum = w.id
                 WHERE u.zipcode=
                 (   select v.zipcode from
                     Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser v
                     WHERE v.facebookid='".$user_profile->getId()."'
                 )
-                and (t.thdType='community' or t.thdType='global')
+                    and (t.thdType='community' or t.thdType='global')
+                    and w.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
 
+            $query_subforum = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+                ORDER BY t.id"
+            );
+
             $threads = $query->getResult();
+            $subforum  = $query_subforum->getResult();
 
             //return new Response($query->getSql());
 
     		//Render the community thread for each of the friends and yourself
-            return $this->render('PortalBundle:Portal:community.html.twig', array('threads' => $threads));
+            return $this->render('PortalBundle:Portal:community.html.twig', 
+                array('threads' => $threads, 'subforum' => $subforum,
+                    'currentforum' => $currentforum));
         } else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Community portal Page.");
 		}  
     }
 
-    public function globalAction()
+    public function globalAction($currentforum)
     {
     	//Get the user data using the fb_token session variable
 
@@ -138,20 +155,32 @@ class PortalController extends Controller
             $query = $em->createQuery(
                 "SELECT t
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
-                WHERE t.thdType='global'
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum w
+                WITH t.thdSubforum = w.id
+                WHERE t.thdType='global' 
+                    and w.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
 
-            $threads = $query->getResult();
+            $query_subforum = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+                ORDER BY t.id"
+            );
 
-    		return $this->render('PortalBundle:Portal:global.html.twig', array('threads' => $threads));
+            $threads = $query->getResult();
+            $subforum  = $query_subforum->getResult();
+
+    		return $this->render('PortalBundle:Portal:global.html.twig', 
+                array('threads' => $threads, 'subforum' => $subforum,
+                    'currentforum' => $currentforum));
 		} else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Global portal Page.");
 		}  
     }
 
-    public function groupsAction()
+    public function groupsAction($currentforum)
     {
     	//Write code for the groups to be shown here
 
@@ -162,7 +191,18 @@ class PortalController extends Controller
 
     		$user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
 		
-    		return $this->render('PortalBundle:Portal:groups.html.twig', array('name' => $user_profile->getFirstName()));
+            $em = $this->getDoctrine()->getManager();
+            $query_subforum = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+                ORDER BY t.id"
+            );
+
+            $subforum  = $query_subforum->getResult();
+
+    		return $this->render('PortalBundle:Portal:groups.html.twig', 
+                array('name' => $user_profile->getFirstName(),'subforum' => $subforum,
+                 'currentforum' => $currentforum));
 		} else {
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Groups portal Page.");
