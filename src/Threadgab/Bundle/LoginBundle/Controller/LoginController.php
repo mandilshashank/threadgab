@@ -9,7 +9,7 @@ use Facebook\GraphUser;
 use Facebook\FacebookRedirectLoginHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
-use Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser;
+use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser;
 use Symfony\Component\HttpFoundation\Request;
 
 if(!isset($_SESSION)) 
@@ -86,7 +86,7 @@ class LoginController extends Controller
     		//Check in database if the user with this FacebookId already
     		//exists, other wise create a new user
 
-			$repository = $this->getDoctrine()->getRepository('ThreadgabLoginBundle:ThreadgabUser');
+			$repository = $this->getDoctrine()->getRepository('ThreadgabDatabaseBundle:ThreadgabUser');
 
 			$query = $repository->createQueryBuilder('p')
 							->where('p.facebookid = :facebookId')

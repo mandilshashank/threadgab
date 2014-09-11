@@ -1,4 +1,4 @@
-Threadgab\Bundle\PortalBundle\Entity\ThreadgabPollHistory:
+Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPollHistory:
     type: entity
     table: threadgab_poll_history
     indexes:
@@ -51,7 +51,7 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabPollHistory:
                     referencedColumnName: id
             orphanRemoval: false
         user:
-            targetEntity: Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser
+            targetEntity: ThreadgabUser
             cascade: {  }
             mappedBy: null
             inversedBy: null

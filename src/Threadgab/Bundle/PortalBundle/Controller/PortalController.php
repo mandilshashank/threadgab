@@ -3,7 +3,7 @@
 namespace Threadgab\Bundle\PortalBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser;
+use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser;
 use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
 use Facebook\FacebookSession;
@@ -48,8 +48,8 @@ class PortalController extends Controller
             /*$em = $this->getDoctrine()->getManager();
             $query = $em->createQuery(
                 "SELECT t
-                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
-                INNER JOIN Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser u
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.thdCreator = u.id
                 WHERE u.facebookid in (:fdId)
                 ORDER BY t.createdAt"
@@ -59,8 +59,8 @@ class PortalController extends Controller
             $em = $this->getDoctrine()->getManager();
             $query = $em->createQuery(
                 "SELECT t
-                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
-                INNER JOIN Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser u
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.thdCreator = u.id
                 WHERE u.facebookid in ("
                 .implode(',', $facebook_ids).
@@ -93,12 +93,12 @@ class PortalController extends Controller
             $em = $this->getDoctrine()->getManager();
             $query = $em->createQuery(
                 "SELECT t
-                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
-                INNER JOIN Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser u
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.thdCreator = u.id
                 WHERE u.zipcode=
                 (   select v.zipcode from
-                    Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser v
+                    Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser v
                     WHERE v.facebookid='".$user_profile->getId()."'
                 )
                 and (t.thdType='community' or t.thdType='global')
@@ -129,7 +129,7 @@ class PortalController extends Controller
             $em = $this->getDoctrine()->getManager();
             $query = $em->createQuery(
                 "SELECT t
-                FROM Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
                 WHERE t.thdType='global'
                 ORDER BY t.createdAt"
             );

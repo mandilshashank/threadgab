@@ -1,0 +1,21 @@
+Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum:
+    type: entity
+    table: threadgab_subforum
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        subForumName:
+            type: string
+            nullable: false
+            length: 100
+            fixed: false
+            comment: ''
+            column: sub_forum_name
+    lifecycleCallbacks: {  }

@@ -1,13 +1,16 @@
-Threadgab\Bundle\PortalBundle\Entity\ThreadgabPollAnswers:
+Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply:
     type: entity
-    table: threadgab_poll_answers
+    table: threadgab_reply
     indexes:
-        fk_question_id_idx:
+        fk_reply_user_id_idx:
             columns:
-                - poll_question_id
+                - reply_user
+        fk_reply_thd_id_idx:
+            columns:
+                - thd_id
     id:
         id:
-            type: bigint
+            type: integer
             nullable: false
             unsigned: false
             comment: ''
@@ -15,19 +18,19 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabPollAnswers:
             generator:
                 strategy: IDENTITY
     fields:
-        answerBody:
+        replyTo:
+            type: bigint
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: reply_to
+        replyData:
             type: string
             nullable: false
             length: 5000
             fixed: false
             comment: ''
-            column: answer_body
-        votes:
-            type: bigint
-            nullable: false
-            unsigned: false
-            comment: ''
-            default: '0'
+            column: reply_data
         createdAt:
             type: datetime
             nullable: false
@@ -39,13 +42,22 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabPollAnswers:
             comment: ''
             column: updated_at
     manyToOne:
-        pollQuestion:
-            targetEntity: ThreadgabPoll
+        thd:
+            targetEntity: ThreadgabThread
             cascade: {  }
             mappedBy: null
             inversedBy: null
             joinColumns:
-                poll_question_id:
+                thd_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+        replyUser:
+            targetEntity: ThreadgabUser
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                reply_user:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }

@@ -1,10 +1,10 @@
-Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread:
+Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPollAnswers:
     type: entity
-    table: threadgab_thread
+    table: threadgab_poll_answers
     indexes:
-        fk_thd_creator_id_idx:
+        fk_question_id_idx:
             columns:
-                - thd_creator_id
+                - poll_question_id
     id:
         id:
             type: bigint
@@ -15,26 +15,19 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread:
             generator:
                 strategy: IDENTITY
     fields:
-        thdSubject:
-            type: string
-            nullable: false
-            length: 200
-            fixed: false
-            comment: ''
-            column: thd_subject
-        thdDesc:
+        answerBody:
             type: string
             nullable: false
             length: 5000
             fixed: false
             comment: ''
-            column: thd_desc
-        isPoll:
-            type: boolean
+            column: answer_body
+        votes:
+            type: bigint
             nullable: false
+            unsigned: false
             comment: ''
             default: '0'
-            column: is_poll
         createdAt:
             type: datetime
             nullable: false
@@ -45,21 +38,14 @@ Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread:
             nullable: true
             comment: ''
             column: updated_at
-        thdType:
-            type: string
-            nullable: false
-            length: 10
-            fixed: false
-            comment: ''
-            column: thd_type
     manyToOne:
-        thdCreator:
-            targetEntity: Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser
+        pollQuestion:
+            targetEntity: ThreadgabPoll
             cascade: {  }
             mappedBy: null
             inversedBy: null
             joinColumns:
-                thd_creator_id:
+                poll_question_id:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }

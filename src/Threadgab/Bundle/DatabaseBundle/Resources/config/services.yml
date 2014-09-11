@@ -1,0 +1,7 @@
+parameters:
+#    threadgab_database.example.class: Threadgab\Bundle\DatabaseBundle\Example
+
+services:
+#    threadgab_database.example:
+#        class: %threadgab_database.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

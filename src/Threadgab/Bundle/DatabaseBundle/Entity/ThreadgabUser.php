@@ -1,54 +1,38 @@
 <?php
 
-namespace Threadgab\Bundle\LoginBundle\Entity;
+namespace Threadgab\Bundle\DatabaseBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabUser
- *
- * @ORM\Table(name="threadgab_user")
- * @ORM\Entity
  */
 class ThreadgabUser
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="bigint")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="facebookId", type="string", length=50, nullable=false)
      */
     private $facebookid;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="emailId", type="string", length=100, nullable=false)
      */
     private $emailid;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="zipcode", type="integer", nullable=false)
      */
     private $zipcode;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="creationDate", type="datetime", nullable=false)
      */
     private $creationdate;
-
 
 
     /**

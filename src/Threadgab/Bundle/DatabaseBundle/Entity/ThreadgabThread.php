@@ -1,78 +1,58 @@
 <?php
 
-namespace Threadgab\Bundle\PortalBundle\Entity;
+namespace Threadgab\Bundle\DatabaseBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabThread
- *
- * @ORM\Table(name="threadgab_thread", indexes={@ORM\Index(name="fk_thd_creator_id_idx", columns={"thd_creator_id"})})
- * @ORM\Entity
  */
 class ThreadgabThread
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="bigint")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="thd_subject", type="string", length=200, nullable=false)
      */
     private $thdSubject;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="thd_desc", type="string", length=5000, nullable=false)
      */
     private $thdDesc;
 
     /**
      * @var boolean
-     *
-     * @ORM\Column(name="is_poll", type="boolean", nullable=false)
      */
     private $isPoll;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="thd_type", type="string", length=10, nullable=false)
      */
     private $thdType;
 
     /**
-     * @var \Threadgab/Bundle/oginbundle/ntity/ThreadgabUser
-     *
-     * @ORM\ManyToOne(targetEntity="Threadgab/Bundle/oginbundle/ntity/ThreadgabUser")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="thd_creator_id", referencedColumnName="id")
-     * })
+     * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser
      */
     private $thdCreator;
 
+    /**
+     * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum
+     */
+    private $thdSubforum;
 
 
     /**
@@ -226,10 +206,10 @@ class ThreadgabThread
     /**
      * Set thdCreator
      *
-     * @param Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $thdCreator
+     * @param \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser $thdCreator
      * @return ThreadgabThread
      */
-    public function setThdCreator(Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $thdCreator = null)
+    public function setThdCreator(\Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser $thdCreator = null)
     {
         $this->thdCreator = $thdCreator;
 
@@ -239,10 +219,33 @@ class ThreadgabThread
     /**
      * Get thdCreator
      *
-     * @return Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser
+     * @return \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser 
      */
     public function getThdCreator()
     {
         return $this->thdCreator;
+    }
+
+    /**
+     * Set thdSubforum
+     *
+     * @param \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum $thdSubforum
+     * @return ThreadgabThread
+     */
+    public function setThdSubforum(\Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum $thdSubforum = null)
+    {
+        $this->thdSubforum = $thdSubforum;
+
+        return $this;
+    }
+
+    /**
+     * Get thdSubforum
+     *
+     * @return \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum 
+     */
+    public function getThdSubforum()
+    {
+        return $this->thdSubforum;
     }
 }

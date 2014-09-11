@@ -1,4 +1,4 @@
-Threadgab\Bundle\PortalBundle\Entity\ThreadgabPoll:
+Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPoll:
     type: entity
     table: threadgab_poll
     indexes:

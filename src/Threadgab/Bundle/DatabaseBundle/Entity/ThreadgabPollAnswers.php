@@ -1,64 +1,43 @@
 <?php
 
-namespace Threadgab\Bundle\PortalBundle\Entity;
+namespace Threadgab\Bundle\DatabaseBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabPollAnswers
- *
- * @ORM\Table(name="threadgab_poll_answers", indexes={@ORM\Index(name="fk_question_id_idx", columns={"poll_question_id"})})
- * @ORM\Entity
  */
 class ThreadgabPollAnswers
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="bigint")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="answer_body", type="string", length=5000, nullable=false)
      */
     private $answerBody;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="votes", type="bigint", nullable=false)
      */
     private $votes;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
-     * @var \Threadgab\Bundle\PortalBundle\Entity\ThreadgabPoll
-     *
-     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\PortalBundle\Entity\ThreadgabPoll")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="poll_question_id", referencedColumnName="id")
-     * })
+     * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPoll
      */
     private $pollQuestion;
-
 
 
     /**
@@ -166,10 +145,10 @@ class ThreadgabPollAnswers
     /**
      * Set pollQuestion
      *
-     * @param \Threadgab\Bundle\PortalBundle\Entity\ThreadgabPoll $pollQuestion
+     * @param \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPoll $pollQuestion
      * @return ThreadgabPollAnswers
      */
-    public function setPollQuestion(\Threadgab\Bundle\PortalBundle\Entity\ThreadgabPoll $pollQuestion = null)
+    public function setPollQuestion(\Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPoll $pollQuestion = null)
     {
         $this->pollQuestion = $pollQuestion;
 
@@ -179,7 +158,7 @@ class ThreadgabPollAnswers
     /**
      * Get pollQuestion
      *
-     * @return \Threadgab\Bundle\PortalBundle\Entity\ThreadgabPoll 
+     * @return \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPoll 
      */
     public function getPollQuestion()
     {

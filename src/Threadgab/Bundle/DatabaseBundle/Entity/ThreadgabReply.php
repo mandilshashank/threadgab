@@ -1,74 +1,48 @@
 <?php
 
-namespace Threadgab\Bundle\PortalBundle\Entity;
+namespace Threadgab\Bundle\DatabaseBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabReply
- *
- * @ORM\Table(name="threadgab_reply", indexes={@ORM\Index(name="fk_reply_user_id_idx", columns={"reply_user"}), @ORM\Index(name="fk_reply_thd_id_idx", columns={"thd_id"})})
- * @ORM\Entity
  */
 class ThreadgabReply
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="reply_to", type="bigint", nullable=true)
      */
     private $replyTo;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="reply_data", type="string", length=5000, nullable=false)
      */
     private $replyData;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
-     * @var \Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread
-     *
-     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="thd_id", referencedColumnName="id")
-     * })
+     * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread
      */
     private $thd;
 
     /**
-     * @var \ThreadgabBundleoginbundlentityThreadgabUser
-     *
-     * @ORM\ManyToOne(targetEntity="ThreadgabBundleoginbundlentityThreadgabUser")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="reply_user", referencedColumnName="id")
-     * })
+     * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser
      */
     private $replyUser;
-
 
 
     /**
@@ -176,10 +150,10 @@ class ThreadgabReply
     /**
      * Set thd
      *
-     * @param \Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread $thd
+     * @param \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread $thd
      * @return ThreadgabReply
      */
-    public function setThd(\Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread $thd = null)
+    public function setThd(\Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread $thd = null)
     {
         $this->thd = $thd;
 
@@ -189,7 +163,7 @@ class ThreadgabReply
     /**
      * Get thd
      *
-     * @return \Threadgab\Bundle\PortalBundle\Entity\ThreadgabThread 
+     * @return \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread 
      */
     public function getThd()
     {
@@ -199,10 +173,10 @@ class ThreadgabReply
     /**
      * Set replyUser
      *
-     * @param Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $replyUser
+     * @param \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser $replyUser
      * @return ThreadgabReply
      */
-    public function setReplyUser(Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser $replyUser = null)
+    public function setReplyUser(\Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser $replyUser = null)
     {
         $this->replyUser = $replyUser;
 
@@ -212,7 +186,7 @@ class ThreadgabReply
     /**
      * Get replyUser
      *
-     * @return Threadgab\Bundle\LoginBundle\Entity\ThreadgabUser 
+     * @return \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser 
      */
     public function getReplyUser()
     {
