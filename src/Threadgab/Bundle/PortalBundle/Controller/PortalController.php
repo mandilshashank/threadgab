@@ -236,7 +236,7 @@ class PortalController extends Controller
 
         //Get the user data using the fb_token session variable
 
-        $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+        /*$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
         if($session) {
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
@@ -255,6 +255,9 @@ class PortalController extends Controller
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the Groups portal Page.");
-        }  
+        } */
+
+        return new Response("Nothing in this page right now... Need to build the backend queries and the frontend threadview 
+            page for this.. Make this page according to the thread view page skeleton provided by Mark"); 
     }
 }
