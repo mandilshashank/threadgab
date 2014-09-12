@@ -17,3 +17,7 @@ portal_groups:
 portal_profile:
     path:     /portal/profile
     defaults: { _controller: PortalBundle:Portal:profile }
+
+portal_thread:
+    path:     /portal/thread/{threadid}
+    defaults: { _controller: PortalBundle:Portal:threadview }

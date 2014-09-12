@@ -117,8 +117,16 @@ class LoginController extends Controller
 				    $em->persist($user);
 				    $em->flush();
 
+				    $query_subforum = $em->createQuery(
+		                "SELECT t
+		                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+		                ORDER BY t.id"
+		            );
+
+		            $subforum  = $query_subforum->getResult();
+
 				    //After adding user to database take to the main portal page
-				    $url = $this->generateUrl('portal_homepage');
+				    $url = $this->generateUrl('portal_homepage', array('currentforum' => $subforum[0]->getSubForumName()));
 					return $this->redirect($url);	
 			    }
 		        
@@ -127,8 +135,18 @@ class LoginController extends Controller
 		           'form' => $form->createView()
 		        ));
 			} else {
+				$em = $this->getDoctrine()->getManager();
+				   
+			    $query_subforum = $em->createQuery(
+	                "SELECT t
+	                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+	                ORDER BY t.id"
+	            );
+
+	            $subforum  = $query_subforum->getResult();
+
 				//User already exists. Redirect to the main page of the forum.
-				$url = $this->generateUrl('portal_homepage');
+				$url = $this->generateUrl('portal_homepage', array('currentforum' => $subforum[0]->getSubForumName()));
 					return $this->redirect($url);	
 			}
 

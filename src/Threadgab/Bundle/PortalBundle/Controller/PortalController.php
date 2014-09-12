@@ -229,4 +229,32 @@ class PortalController extends Controller
             return new Response("Session not found at the Groups portal Page.");
         }  
     }
+
+    public function threadviewAction($threadid)
+    {
+        //Write code for the groups to be shown here
+
+        //Get the user data using the fb_token session variable
+
+        $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+        if($session) {
+
+            $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
+        
+            $em = $this->getDoctrine()->getManager();
+            $query_subforum = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+                ORDER BY t.id"
+            );
+
+            $subforum  = $query_subforum->getResult();
+
+            return $this->render('PortalBundle:Portal:threadview.html.twig', 
+                array('name' => $user_profile->getFirstName(),'subforum' => $subforum));
+        } else {
+            //Session not found. Take to a common error page
+            return new Response("Session not found at the Groups portal Page.");
+        }  
+    }
 }
