@@ -10,9 +10,9 @@ portal_global:
     path:     /portal/global/{currentforum}
     defaults: { _controller: PortalBundle:Portal:global }
 
-portal_groups:
-    path:     /portal/groups/{currentforum}
-    defaults: { _controller: PortalBundle:Portal:groups }
+portal_subscribed:
+    path:     /portal/subscribed/{currentforum}
+    defaults: { _controller: PortalBundle:Portal:subscribed }
 
 portal_profile:
     path:     /portal/profile

@@ -162,6 +162,7 @@ class PortalController extends Controller
                 ORDER BY t.createdAt"
             );
 
+            //Query to get all the subforums from the database
             $query_subforum = $em->createQuery(
                 "SELECT t
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
@@ -180,9 +181,9 @@ class PortalController extends Controller
 		}  
     }
 
-    public function groupsAction($currentforum)
+    public function subscribedAction($currentforum)
     {
-    	//Write code for the groups to be shown here
+    	//Write code for the subscribed to be shown here
 
     	//Get the user data using the fb_token session variable
 
@@ -198,20 +199,37 @@ class PortalController extends Controller
                 ORDER BY t.id"
             );
 
+            $query = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubscriptions u
+                WITH t.thdCreator = u.subscribee
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser v 
+                WITH u.subscriber = v.id
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum w
+                WITH t.thdSubforum = w.id    
+                WHERE v.facebookid = '".$user_profile->getId()."'  
+                    and (t.thdType='subscribed' or t.thdType='global')
+                    and w.subForumName='".$currentforum."'
+                ORDER BY t.createdAt"
+            );
+
+            $threads = $query->getResult();
+
             $subforum  = $query_subforum->getResult();
 
-    		return $this->render('PortalBundle:Portal:groups.html.twig', 
-                array('name' => $user_profile->getFirstName(),'subforum' => $subforum,
+    		return $this->render('PortalBundle:Portal:subscribed.html.twig', 
+                array('threads' => $threads,'subforum' => $subforum,
                  'currentforum' => $currentforum));
 		} else {
 			//Session not found. Take to a common error page
-			return new Response("Session not found at the Groups portal Page.");
+			return new Response("Session not found at the subscribed portal Page.");
 		}  
     }
 
     public function profileAction()
     {
-        //Write code for the groups to be shown here
+        //Write code for the subscribed to be shown here
 
         //Get the user data using the fb_token session variable
 
@@ -226,13 +244,13 @@ class PortalController extends Controller
                     'user_profile_photo' => $user_profile_photo));
         } else {
             //Session not found. Take to a common error page
-            return new Response("Session not found at the Groups portal Page.");
+            return new Response("Session not found at the subscribed portal Page.");
         }  
     }
 
     public function threadviewAction($threadid)
     {
-        //Write code for the groups to be shown here
+        //Write code for the subscribed to be shown here
 
         //Get the user data using the fb_token session variable
 
@@ -254,7 +272,7 @@ class PortalController extends Controller
                 array('name' => $user_profile->getFirstName(),'subforum' => $subforum));
         } else {
             //Session not found. Take to a common error page
-            return new Response("Session not found at the Groups portal Page.");
+            return new Response("Session not found at the subscribed portal Page.");
         } */
 
         return new Response("Nothing in this page right now... Need to build the backend queries and the frontend threadview 

@@ -1,0 +1,40 @@
+Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubscriptions:
+    type: entity
+    table: threadgab_subscriptions
+    indexes:
+        fk_subscribee_idx:
+            columns:
+                - subscribee
+        fk_subscriber_idx:
+            columns:
+                - subscriber
+    id:
+        subscriptionId:
+            type: bigint
+            nullable: false
+            unsigned: false
+            comment: ''
+            id: true
+            column: subscription_id
+            generator:
+                strategy: IDENTITY
+    manyToOne:
+        subscribee:
+            targetEntity: ThreadgabUser
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                subscribee:
+                    referencedColumnName: id
+            orphanRemoval: false
+        subscriber:
+            targetEntity: ThreadgabUser
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                subscriber:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }
