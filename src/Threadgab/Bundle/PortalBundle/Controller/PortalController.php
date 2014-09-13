@@ -248,34 +248,38 @@ class PortalController extends Controller
         }  
     }
 
-    public function threadviewAction($threadid)
+    public function threadviewAction($threadid,$currentforum)
     {
         //Write code for the subscribed to be shown here
 
         //Get the user data using the fb_token session variable
 
-        /*$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+        $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
         if($session) {
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
         
             $em = $this->getDoctrine()->getManager();
-            $query_subforum = $em->createQuery(
+            $query_thread = $em->createQuery(
                 "SELECT t
-                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
-                ORDER BY t.id"
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
+                WHERE t.id=".$threadid
             );
 
-            $subforum  = $query_subforum->getResult();
+            $thread  = $query_thread->getResult();
+
+            //Get all the replies to this thread and also the replies to those replies
+
+            //If a thread is a poll we need to show different kind of visualization
 
             return $this->render('PortalBundle:Portal:threadview.html.twig', 
-                array('name' => $user_profile->getFirstName(),'subforum' => $subforum));
+                array('thread' => $thread,'currentforum' => $currentforum));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");
-        } */
+        } 
 
-        return new Response("Nothing in this page right now... Need to build the backend queries and the frontend threadview 
-            page for this.. Make this page according to the thread view page skeleton provided by Mark"); 
+        //return new Response("Nothing in this page right now... Need to build the backend queries and the frontend threadview 
+        //   page for this.. Make this page according to the thread view page skeleton provided by Mark"); 
     }
 }

@@ -19,5 +19,5 @@ portal_profile:
     defaults: { _controller: PortalBundle:Portal:profile }
 
 portal_thread:
-    path:     /portal/thread/{threadid}
+    path:     /portal/thread/{threadid}/{currentforum}
     defaults: { _controller: PortalBundle:Portal:threadview }
