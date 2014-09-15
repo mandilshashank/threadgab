@@ -272,8 +272,10 @@ class PortalController extends Controller
             $query_replies = $em->createQuery(
                 "SELECT t
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply t
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
+                WITH t.replyUser=u.id
                 WHERE t.thd=".$threadid.
-                " ORDER BY t.replyTo ASC"
+                " ORDER BY t.replyTo,t.id ASC"
 
             );
 

@@ -9,6 +9,10 @@
     {% if arr_replies|length > 0 %}
       {% for reply in arr_replies %}
          <div class="row-fluid">
+            <div class="span1 text-center" style="border: 1px solid #ccc;">
+                <img src="{{reply.replyUser.photoUrl}}"></img>
+            </div>
+
             <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
                 <p>{{reply.replyData}}</p>
                 {{_self.menu_links(replies[reply.id]|reverse,replies)}}
@@ -26,7 +30,7 @@
       </div>
 
       <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
-          <p>{{threads.thdSubject}}</p>
+          <p>{{threads.thdSubject|nl2br}}</p>
       </div>
     </div>
   </div> 
@@ -38,7 +42,7 @@
       </div>
 
       <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
-          <p>{{threads.thdDesc}}</p>
+          <p>{{threads.thdDesc|nl2br}}</p>
       </div>
     </div>
      
