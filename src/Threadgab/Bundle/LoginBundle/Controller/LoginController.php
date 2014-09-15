@@ -82,6 +82,7 @@ class LoginController extends Controller
     	if($session) {
 
     		 $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
+    		 $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
 
     		//Check in database if the user with this FacebookId already
     		//exists, other wise create a new user
@@ -102,6 +103,7 @@ class LoginController extends Controller
 	    		// the Threadgab Id when the user logs in through facebook.	
 		        $user->setFacebookId($user_profile->getId());
 		        $user->setCreationDate(date_create(date("Y-m-d H:i:s", time())));
+		        $user->setPhotoUrl($user_profile_photo->url);
 
 		        $form = $this->createFormBuilder($user)
 		            ->add('emailid', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
@@ -135,6 +137,11 @@ class LoginController extends Controller
 		           'form' => $form->createView()
 		        ));
 			} else {
+				$users[0]->setPhotoUrl($user_profile_photo->url);
+				$em = $this->getDoctrine()->getManager();
+			    $em->persist($users[0]);
+			    $em->flush();
+
 				$em = $this->getDoctrine()->getManager();
 				   
 			    $query_subforum = $em->createQuery(

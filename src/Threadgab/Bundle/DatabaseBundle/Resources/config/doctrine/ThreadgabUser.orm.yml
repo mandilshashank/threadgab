@@ -36,4 +36,11 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser:
             comment: ''
             default: CURRENT_TIMESTAMP
             column: creationDate
+        photoUrl:
+            type: string
+            nullable: true
+            length: 500
+            fixed: false
+            comment: ''
+            column: photo_url
     lifecycleCallbacks: {  }

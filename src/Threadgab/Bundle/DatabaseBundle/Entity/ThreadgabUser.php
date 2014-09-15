@@ -136,4 +136,32 @@ class ThreadgabUser
     {
         return $this->creationdate;
     }
+    /**
+     * @var string
+     */
+    private $photoUrl;
+
+
+    /**
+     * Set photoUrl
+     *
+     * @param string $photoUrl
+     * @return ThreadgabUser
+     */
+    public function setPhotoUrl($photoUrl)
+    {
+        $this->photoUrl = $photoUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get photoUrl
+     *
+     * @return string 
+     */
+    public function getPhotoUrl()
+    {
+        return $this->photoUrl;
+    }
 }

@@ -258,6 +258,7 @@ class PortalController extends Controller
         if($session) {
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
+            $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
         
             $em = $this->getDoctrine()->getManager();
             $query_thread = $em->createQuery(
