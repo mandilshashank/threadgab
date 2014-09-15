@@ -11,7 +11,7 @@
          <div class="row-fluid">
             <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
                 <p>{{reply.replyData}}</p>
-                {{_self.menu_links(replies[reply.id],replies)}}
+                {{_self.menu_links(replies[reply.id]|reverse,replies)}}
             </div>           
         </div>
       {% endfor %}  
@@ -45,7 +45,7 @@
     {% import _self as macros %}
 
     {% if replies|length > 0 %}  
-      {{macros.menu_links(replies[0],replies)}}
+      {{macros.menu_links(replies[0]|reverse,replies)}}
     {% endif %}  
   </div>
 
