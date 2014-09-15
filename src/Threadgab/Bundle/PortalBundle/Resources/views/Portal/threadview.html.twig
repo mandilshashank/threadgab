@@ -4,7 +4,7 @@
 	{{parent()}}
 {% endblock %}
 
-
+{# Macro for printing out replies to a thread recursively #}
 {% macro menu_links(arr_replies,replies) %}
     {% if arr_replies|length > 0 %}
       {% for reply in arr_replies %}
@@ -12,8 +12,7 @@
             <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
                 <p>{{reply.replyData}}</p>
                 {{_self.menu_links(replies[reply.id],replies)}}
-            </div>
-            
+            </div>           
         </div>
       {% endfor %}  
     {% endif %}
