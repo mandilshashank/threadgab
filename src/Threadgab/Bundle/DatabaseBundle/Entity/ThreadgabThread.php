@@ -6,53 +6,83 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabThread
+ *
+ * @ORM\Table(name="threadgab_thread", indexes={@ORM\Index(name="fk_thd_creator_id_idx", columns={"thd_creator_id"}), @ORM\Index(name="fk_thd_subforum_id_idx", columns={"thd_subforum_id"})})
+ * @ORM\Entity
  */
 class ThreadgabThread
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="thd_subject", type="string", length=200, nullable=false)
      */
     private $thdSubject;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="thd_desc", type="string", length=5000, nullable=false)
      */
     private $thdDesc;
 
     /**
      * @var boolean
+     *
+     * @ORM\Column(name="is_poll", type="boolean", nullable=false)
      */
     private $isPoll;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="thd_type", type="string", length=10, nullable=false)
      */
     private $thdType;
 
     /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser
+     *
+     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="thd_creator_id", referencedColumnName="id")
+     * })
      */
     private $thdCreator;
 
     /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum
+     *
+     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="thd_subforum_id", referencedColumnName="id")
+     * })
      */
     private $thdSubforum;
+
 
 
     /**

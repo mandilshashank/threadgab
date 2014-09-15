@@ -4,18 +4,56 @@
 	{{parent()}}
 {% endblock %}
 
-{% block body %}
-	<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2 pull-left" style="border: 2px solid black;">
-            <h3>Something</h3>
-        </div>
 
-        <div class="span8" style="border: 2px solid black;">
-            <h3>Thread subject</h3>
+{% macro menu_links(arr_replies,replies) %}
+    {% if arr_replies|length > 0 %}
+      {% for reply in arr_replies %}
+         <div class="row-fluid">
+            <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
+                <p>{{reply.replyData}}</p>
+                {{_self.menu_links(replies[reply.id],replies)}}
+            </div>
+            
         </div>
+      {% endfor %}  
+    {% endif %}
+{% endmacro %}
+
+{% block body %}
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span1" style="border: 1px solid #ccc;">
+          <p>{{currentforum}}</p>
       </div>
+
+      <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
+          <p>{{threads.thdSubject}}</p>
+      </div>
+    </div>
+  </div> 
+
+	<div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span1 text-center" style="border: 1px solid #ccc;">
+          <img src="{{user_profile_photo.url}}"></img>
+      </div>
+
+      <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
+          <p>{{threads.thdDesc}}</p>
+      </div>
+    </div>
+     
+    {% import _self as macros %}
+
+    {% if replies|length > 0 %}  
+      {{macros.menu_links(replies[0],replies)}}
+    {% endif %}  
   </div>
+
+  <div class="footer">
+      <p>&copy; ThreadGab.com 2014</p>
+  </div>
+      
 {% endblock %}
 
 

@@ -6,43 +6,69 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabReply
+ *
+ * @ORM\Table(name="threadgab_reply", indexes={@ORM\Index(name="fk_reply_user_id_idx", columns={"reply_user"}), @ORM\Index(name="fk_reply_thd_id_idx", columns={"thd_id"})})
+ * @ORM\Entity
  */
 class ThreadgabReply
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="reply_to", type="bigint", nullable=false)
      */
     private $replyTo;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="reply_data", type="string", length=5000, nullable=false)
      */
     private $replyData;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread
+     *
+     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="thd_id", referencedColumnName="id")
+     * })
      */
     private $thd;
 
     /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser
+     *
+     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="reply_user", referencedColumnName="id")
+     * })
      */
     private $replyUser;
+
 
 
     /**

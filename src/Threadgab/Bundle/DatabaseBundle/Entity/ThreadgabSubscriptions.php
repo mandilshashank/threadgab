@@ -6,23 +6,41 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabSubscriptions
+ *
+ * @ORM\Table(name="threadgab_subscriptions", indexes={@ORM\Index(name="fk_subscribee_idx", columns={"subscribee"}), @ORM\Index(name="fk_subscriber_idx", columns={"subscriber"})})
+ * @ORM\Entity
  */
 class ThreadgabSubscriptions
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="subscription_id", type="bigint")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $subscriptionId;
 
     /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser
+     *
+     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="subscribee", referencedColumnName="id")
+     * })
      */
     private $subscribee;
 
     /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser
+     *
+     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="subscriber", referencedColumnName="id")
+     * })
      */
     private $subscriber;
+
 
 
     /**

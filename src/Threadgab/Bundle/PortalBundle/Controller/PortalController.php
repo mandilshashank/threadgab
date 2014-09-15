@@ -269,12 +269,38 @@ class PortalController extends Controller
 
             $thread  = $query_thread->getResult();
 
+            $query_replies = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply t
+                WHERE t.thd=".$threadid.
+                " ORDER BY t.replyTo ASC"
+
+            );
+
+            $final_reply_array=array();
+            $final_reply_array[0]=array();
+            $reply_id_check_array = array();
+
+            $replies  = $query_replies->getResult();
+
+            //return new Response("Noresponse");
+
+            foreach ($replies as $reply) {
+                if(!in_array($reply->getId(), $reply_id_check_array)) {
+                   $final_reply_array[$reply->getId()]=array();
+                   array_push($reply_id_check_array, $reply->getId());
+                }
+                array_push($final_reply_array[$reply->getReplyTo()], $reply); 
+            } 
+
+
             //Get all the replies to this thread and also the replies to those replies
 
             //If a thread is a poll we need to show different kind of visualization
 
             return $this->render('PortalBundle:Portal:threadview.html.twig', 
-                array('thread' => $thread,'currentforum' => $currentforum));
+                array('threads' => $thread[0],'currentforum' => $currentforum,
+                    'user_profile_photo' => $user_profile_photo, 'replies' => $final_reply_array));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

@@ -20,9 +20,10 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply:
     fields:
         replyTo:
             type: bigint
-            nullable: true
+            nullable: false
             unsigned: false
             comment: ''
+            default: '0'
             column: reply_to
         replyData:
             type: string

@@ -6,33 +6,52 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ThreadgabPoll
+ *
+ * @ORM\Table(name="threadgab_poll", indexes={@ORM\Index(name="fk_thd_id_idx", columns={"thd_id"})})
+ * @ORM\Entity
  */
 class ThreadgabPoll
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="poll_body", type="string", length=5000, nullable=false)
      */
     private $pollBody;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread
+     *
+     * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="thd_id", referencedColumnName="id")
+     * })
      */
     private $thd;
+
 
 
     /**
