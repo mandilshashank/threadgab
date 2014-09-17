@@ -137,7 +137,7 @@ class LoginController extends Controller
 		           'form' => $form->createView()
 		        ));
 			} else {
-				$users[0]->setPhotoUrl($user_profile_photo->url);
+				$users[0]->setPhotoUrl($user_profile_photo["url"]);
 				$em = $this->getDoctrine()->getManager();
 			    $em->persist($users[0]);
 			    $em->flush();

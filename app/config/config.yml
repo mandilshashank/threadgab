@@ -67,3 +67,7 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+stfalcon_tinymce:
+        include_jquery: true
+        tinymce_jquery: true

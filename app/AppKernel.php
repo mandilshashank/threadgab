@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle(),
             new Threadgab\Bundle\PortalBundle\PortalBundle(),
             new Threadgab\Bundle\DatabaseBundle\ThreadgabDatabaseBundle(),
+            new Stfalcon\Bundle\TinymceBundle\StfalconTinymceBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

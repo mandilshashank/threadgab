@@ -14,7 +14,7 @@
             </div>
 
             <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
-                <p>{{reply.replyData}}</p>
+                <pre>{{reply.replyData|raw}}</pre>
                 {{_self.menu_links(replies[reply.id]|reverse,replies)}}
             </div>           
         </div>
@@ -53,10 +53,13 @@
     {% endif %}  
   </div>
 
+  {{ form(form) }}
+
   <div class="footer">
       <p>&copy; ThreadGab.com 2014</p>
   </div>
       
 {% endblock %}
+
 
 

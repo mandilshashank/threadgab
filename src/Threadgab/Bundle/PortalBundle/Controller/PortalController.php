@@ -4,12 +4,13 @@ namespace Threadgab\Bundle\PortalBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser;
+use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply;
 use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
 use Facebook\GraphUser;
-
+use Symfony\Component\HttpFoundation\Request;
 
 if(!isset($_SESSION)) 
 { 
@@ -248,7 +249,7 @@ class PortalController extends Controller
         }  
     }
 
-    public function threadviewAction($threadid,$currentforum)
+    public function threadviewAction(Request $request,$threadid,$currentforum)
     {
         //Write code for the subscribed to be shown here
 
@@ -260,6 +261,14 @@ class PortalController extends Controller
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
             $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
         
+            //Get the current user
+            $repository = $this->getDoctrine()->getRepository('ThreadgabDatabaseBundle:ThreadgabUser');
+            $query = $repository->createQueryBuilder('p')
+                            ->where('p.facebookid = :facebookId')
+                            ->setParameter('facebookId', (string)$user_profile->getId())
+                            ->getQuery();
+            $users = $query->getResult();
+
             $em = $this->getDoctrine()->getManager();
             $query_thread = $em->createQuery(
                 "SELECT t
@@ -295,6 +304,30 @@ class PortalController extends Controller
                 array_push($final_reply_array[$reply->getReplyTo()], $reply); 
             } 
 
+            $new_reply=new ThreadgabReply();
+            $new_reply->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
+            $new_reply->setThd($thread[0]);
+            $new_reply->setReplyUser($users[0]);
+
+
+            $form = $this->createFormBuilder($new_reply)
+                    ->add('replyData', 'textarea', array('label' => 'Reply to Thread', 'attr' => array('class' => 'tinymce')))
+                    ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
+                    ->getForm();
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                    //Persist the user to the database
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($new_reply);
+                    $em->flush();
+
+                    //Return back to the same thread page
+                    $url = $this->generateUrl('portal_thread', 
+                        array('threadid'=>$threadid,'currentforum'=>$currentforum));
+                    return $this->redirect($url);   
+            }
 
             //Get all the replies to this thread and also the replies to those replies
 
@@ -302,7 +335,8 @@ class PortalController extends Controller
 
             return $this->render('PortalBundle:Portal:threadview.html.twig', 
                 array('threads' => $thread[0],'currentforum' => $currentforum,
-                    'user_profile_photo' => $user_profile_photo, 'replies' => $final_reply_array));
+                    'user_profile_photo' => $user_profile_photo, 'replies' => $final_reply_array,
+                    'form' => $form->createView()));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

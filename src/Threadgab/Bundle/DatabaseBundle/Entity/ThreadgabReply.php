@@ -26,7 +26,7 @@ class ThreadgabReply
      *
      * @ORM\Column(name="reply_to", type="bigint", nullable=false)
      */
-    private $replyTo;
+    private $replyTo=0;
 
     /**
      * @var string
