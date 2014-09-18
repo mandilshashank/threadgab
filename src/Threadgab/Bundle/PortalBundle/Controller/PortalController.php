@@ -5,6 +5,7 @@ namespace Threadgab\Bundle\PortalBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser;
 use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply;
+use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread;
 use Symfony\Component\HttpFoundation\Response;
 use Threadgab\Bundle\LoginBundle\ThreadgabLoginBundle;
 use Facebook\FacebookSession;
@@ -344,5 +345,68 @@ class PortalController extends Controller
 
         //return new Response("Nothing in this page right now... Need to build the backend queries and the frontend threadview 
         //   page for this.. Make this page according to the thread view page skeleton provided by Mark"); 
+    }
+
+    public function threadcreateAction(Request $request)
+    {
+
+        $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+        if($session) {
+
+            $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
+            $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
+        
+            //Get the current user
+            $repository = $this->getDoctrine()->getRepository('ThreadgabDatabaseBundle:ThreadgabUser');
+            $query = $repository->createQueryBuilder('p')
+                            ->where('p.facebookid = :facebookId')
+                            ->setParameter('facebookId', (string)$user_profile->getId())
+                            ->getQuery();
+            $users = $query->getResult();
+
+            $new_thread=new ThreadgabThread();
+            $new_thread->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
+            $new_thread->setThdCreator($users[0]);
+
+            $form = $this->createFormBuilder($new_thread)
+                    ->setMethod('PUT')
+                    ->add('thdDesc', 'text', array('label'=> 'Thread Description', 'attr' => array('class' => 'form-control')))
+                    ->add('thdSubject', 'textarea', array('label' => 'Thread Subject', 'attr' => array('class' => 'tinymce')))
+                    ->add('isPoll', 'choice', array('choices' => array(false => 'No', true => 'Yes'),'multiple' => false,
+                        'expanded' => false, 'required' => true,'label' => 'Is it a Poll Thread'))
+                    ->add('thdType', 'choice', array('choices' => array('friend' => 'Friend','community' => 'Community',
+                        'global' => 'Global', 'subscribed' => 'Subscribed'),'multiple' => false,
+                        'expanded' => false, 'required' => true,'label' => 'Thread Type', 'attr' => array('class' => 'form-control')))
+                    ->add('thdSubforum','entity',array('class' => 'ThreadgabDatabaseBundle:ThreadgabSubforum', 
+                        'property' => 'subForumName', 'multiple'=>false, 'expanded'=>false, 'label' => 'Thread Subforum',
+                        'attr' => array('class' => 'form-control')))
+                    ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
+                    ->getForm();
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                    //Persist the user to the database
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($new_thread);
+                    $em->flush();
+
+                    //Return back to the same thread page
+                    $url = $this->generateUrl('portal_thread', 
+                        array('threadid'=>$new_thread->getId(),
+                            'currentforum'=>$new_thread->getThdSubforum()->getSubForumName()));
+                    return $this->redirect($url);   
+            }
+
+            //Get all the replies to this thread and also the replies to those replies
+
+            //If a thread is a poll we need to show different kind of visualization
+
+            return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
+                array('form' => $form->createView()));
+        } else {
+            //Session not found. Take to a common error page
+            return new Response("Session not found at the subscribed portal Page.");
+        } 
     }
 }
