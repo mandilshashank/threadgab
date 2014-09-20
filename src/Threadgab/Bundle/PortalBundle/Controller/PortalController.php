@@ -369,10 +369,9 @@ class PortalController extends Controller
             $new_thread->setThdCreator($users[0]);
 
             $form = $this->createFormBuilder($new_thread)
-                    ->setMethod('PUT')
-                    ->add('thdDesc', 'text', array('label'=> 'Thread Description', 'attr' => array('class' => 'form-control')))
-                    ->add('thdSubject', 'textarea', array('label' => 'Thread Subject', 'attr' => array('class' => 'tinymce')))
-                    ->add('isPoll', 'choice', array('choices' => array(false => 'No', true => 'Yes'),'multiple' => false,
+                    ->add('thdSubject', 'text', array('label'=> 'Thread Subject', 'attr' => array('class' => 'form-control')))
+                    ->add('thdDesc', 'textarea', array('label' => 'Thread Description', 'attr' => array('class' => 'tinymce')))
+                    ->add('isPoll', 'choice', array('choices' => array(0 => 'No', 1 => 'Yes'),'multiple' => false,
                         'expanded' => false, 'required' => true,'label' => 'Is it a Poll Thread'))
                     ->add('thdType', 'choice', array('choices' => array('friend' => 'Friend','community' => 'Community',
                         'global' => 'Global', 'subscribed' => 'Subscribed'),'multiple' => false,
@@ -383,19 +382,21 @@ class PortalController extends Controller
                     ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
                     ->getForm();
 
-            $form->handleRequest($request);
+            if ($request->isMethod('POST')) {
+                $form->submit($request->request->get($form->getName()));
 
-            if ($form->isValid()) {
-                    //Persist the user to the database
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($new_thread);
-                    $em->flush();
+                if ($form->isValid()) {
+                        //Persist the user to the database
+                        $em = $this->getDoctrine()->getManager();
+                        $em->persist($new_thread);
+                        $em->flush();
 
-                    //Return back to the same thread page
-                    $url = $this->generateUrl('portal_thread', 
-                        array('threadid'=>$new_thread->getId(),
-                            'currentforum'=>$new_thread->getThdSubforum()->getSubForumName()));
-                    return $this->redirect($url);   
+                        //Return back to the same thread page
+                        $url = $this->generateUrl('portal_thread', 
+                            array('threadid'=>$new_thread->getId(),
+                                'currentforum'=>$new_thread->getThdSubforum()->getSubForumName()));
+                        return $this->redirect($url);   
+                } 
             }
 
             //Get all the replies to this thread and also the replies to those replies
