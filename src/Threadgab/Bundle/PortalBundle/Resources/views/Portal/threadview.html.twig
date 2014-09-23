@@ -5,7 +5,7 @@
 {% endblock %}
 
 {# Macro for printing out replies to a thread recursively #}
-{% macro menu_links(arr_replies,replies) %}
+{% macro menu_links(arr_replies,replies,threadid,currentforum) %}
     {% if arr_replies|length > 0 %}
       {% for reply in arr_replies %}
          <div class="row-fluid">
@@ -14,8 +14,23 @@
             </div>
 
             <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
-                <pre>{{reply.replyData|raw}}</pre>
-                {{_self.menu_links(replies[reply.id]|reverse,replies)}}
+                <div class="row-fluid">
+                  <div class="span11">
+                    <pre>{{reply.replyData|raw}}</pre>
+                    {{_self.menu_links(replies[reply.id]|reverse,replies)}}
+                  </div>
+                  <div class="span1">
+                    <button class="btn-default btn-lg" id="{{reply.id}}">Reply</button>      
+                  </div> 
+                </div>
+                <div id="div_{{reply.id}}">
+                    <!--Reply form to reply to specific reply-->
+                    <form id="form_{{reply.id}}" method='POST' action="/app_dev.php/portal/thread/{{threadid}}/{{currentforum}}?id={{reply.id}}">
+                      <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
+                      <input type="hidden" id="reply_to_{{reply.id}}" name="reply_to_{{reply.id}}" value="{{reply.id}}"> 
+                      <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"></input> 
+                    </form>  
+                </div>
             </div>           
         </div>
       {% endfor %}  
@@ -42,18 +57,20 @@
       </div>
 
       <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
-          <p>{{threads.thdDesc|nl2br}}</p>
+          <pre>{{threads.thdDesc|raw|nl2br}}</pre>
       </div>
     </div>
      
     {% import _self as macros %}
 
     {% if replies|length > 0 %}  
-      {{macros.menu_links(replies[0]|reverse,replies)}}
+      {{macros.menu_links(replies[0]|reverse,replies,threads.id,currentforum)}}
     {% endif %}  
   </div>
 
-  {{ form(form) }}
+  <form method='POST' action="">
+    {{form(form)}}
+  </form>
 
   <div class="footer">
       <p>&copy; ThreadGab.com 2014</p>

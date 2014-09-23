@@ -103,7 +103,7 @@ class LoginController extends Controller
 	    		// the Threadgab Id when the user logs in through facebook.	
 		        $user->setFacebookId($user_profile->getId());
 		        $user->setCreationDate(date_create(date("Y-m-d H:i:s", time())));
-		        $user->setPhotoUrl($user_profile_photo->url);
+		        $user->setPhotoUrl($user_profile_photo["url"]);
 
 		        $form = $this->createFormBuilder($user)
 		            ->add('emailid', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))

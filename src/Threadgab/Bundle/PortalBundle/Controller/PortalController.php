@@ -313,12 +313,14 @@ class PortalController extends Controller
 
             $form = $this->createFormBuilder($new_reply)
                     ->add('replyData', 'textarea', array('label' => 'Reply to Thread', 'attr' => array('class' => 'tinymce')))
+                    //->add('replyTo', 'text', array('label' => 'Reply to'))
                     ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
                     ->getForm();
 
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
+            if ($request->isMethod('POST')) {
+                $form->submit($request->request->get($form->getName()));
+                
+                if ($form->isValid()) {
                     //Persist the user to the database
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($new_reply);
@@ -327,7 +329,28 @@ class PortalController extends Controller
                     //Return back to the same thread page
                     $url = $this->generateUrl('portal_thread', 
                         array('threadid'=>$threadid,'currentforum'=>$currentforum));
-                    return $this->redirect($url);   
+                    return $this->redirect($url."?id=0");
+                }   
+            }
+
+            if(isset($_POST)){
+                $form_id=$_GET['id'];
+                if($form_id!=0) {
+                $dynamic_reply=new ThreadgabReply();
+                $dynamic_reply->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
+                $dynamic_reply->setThd($thread[0]);
+                $dynamic_reply->setReplyUser($users[0]);
+                $dynamic_reply->setReplyTo($_POST['reply_to_'.$form_id]);
+                $dynamic_reply->setReplyData($_POST['textarea_'.$form_id]);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($dynamic_reply);
+                $em->flush();
+
+                $url = $this->generateUrl('portal_thread', 
+                        array('threadid'=>$threadid,'currentforum'=>$currentforum));
+                return $this->redirect($url."?id=0");
+                }
             }
 
             //Get all the replies to this thread and also the replies to those replies
