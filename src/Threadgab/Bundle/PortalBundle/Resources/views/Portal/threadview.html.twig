@@ -17,13 +17,13 @@
                 <div class="row-fluid">
                   <div class="span11">
                     <pre>{{reply.replyData|raw}}</pre>
-                    {{_self.menu_links(replies[reply.id]|reverse,replies)}}
+                    {{_self.menu_links(replies[reply.id]|reverse,replies,threadid,currentforum)}}
                   </div>
                   <div class="span1">
-                    <button class="btn-default btn-lg" id="{{reply.id}}">Reply</button>      
+                    <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>     
                   </div> 
                 </div>
-                <div id="div_{{reply.id}}">
+                <div id="div_{{reply.id}}" class="hidden" align="center">
                     <!--Reply form to reply to specific reply-->
                     <form id="form_{{reply.id}}" method='POST' action="/app_dev.php/portal/thread/{{threadid}}/{{currentforum}}?id={{reply.id}}">
                       <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
@@ -76,6 +76,22 @@
       <p>&copy; ThreadGab.com 2014</p>
   </div>
       
+{% endblock %}
+
+{% block javascripts %}
+  {{parent()}}
+  <script type="text/javascript">
+      function toggleDiv(id){
+        div = document.getElementById("div_"+id);
+        if(div.className=="hidden"){
+          document.getElementById("reply_"+id).innerHTML="Unquote";
+          div.className="show";
+        } else {
+          document.getElementById("reply_"+id).innerHTML="Quote";
+          div.className="hidden";
+        }
+      }
+  </script>
 {% endblock %}
 
 
