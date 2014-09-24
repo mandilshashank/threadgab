@@ -26,9 +26,9 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply:
             default: '0'
             column: reply_to
         replyData:
-            type: string
+            type: blob
             nullable: false
-            length: 5000
+            length: null
             fixed: false
             comment: ''
             column: reply_data

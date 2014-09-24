@@ -56,7 +56,10 @@ class ThreadgabUser
      */
     private $photoUrl;
 
-
+    /**
+     * @var string
+     */
+    private $signature;
 
     /**
      * Get id
@@ -181,5 +184,29 @@ class ThreadgabUser
     public function getPhotoUrl()
     {
         return $this->photoUrl;
+    }
+
+
+    /**
+     * Set signature
+     *
+     * @param string $signature
+     * @return ThreadgabUser
+     */
+    public function setSignature($signature)
+    {
+        $this->signature = $signature;
+
+        return $this;
+    }
+
+    /**
+     * Get signature
+     *
+     * @return string 
+     */
+    public function getSignature()
+    {
+        return $this->signature;
     }
 }

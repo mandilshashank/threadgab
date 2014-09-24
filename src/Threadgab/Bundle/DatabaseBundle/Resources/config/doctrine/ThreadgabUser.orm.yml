@@ -43,4 +43,10 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser:
             fixed: false
             comment: ''
             column: photo_url
+        signature:
+            type: string
+            nullable: true
+            length: 1000
+            fixed: false
+            comment: ''
     lifecycleCallbacks: {  }
