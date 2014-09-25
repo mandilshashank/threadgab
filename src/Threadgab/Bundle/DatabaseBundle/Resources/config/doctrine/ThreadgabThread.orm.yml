@@ -55,6 +55,13 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread:
             fixed: false
             comment: ''
             column: thd_type
+        numReply:
+            type: integer
+            nullable: true
+            unsigned: false
+            comment: ''
+            default: '0'
+            column: num_reply
     manyToOne:
         thdCreator:
             targetEntity: ThreadgabUser

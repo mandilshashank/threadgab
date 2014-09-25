@@ -278,4 +278,32 @@ class ThreadgabThread
     {
         return $this->thdSubforum;
     }
+    /**
+     * @var integer
+     */
+    private $numReply;
+
+
+    /**
+     * Set numReply
+     *
+     * @param integer $numReply
+     * @return ThreadgabThread
+     */
+    public function setNumReply($numReply)
+    {
+        $this->numReply = $numReply;
+
+        return $this;
+    }
+
+    /**
+     * Get numReply
+     *
+     * @return integer 
+     */
+    public function getNumReply()
+    {
+        return $this->numReply;
+    }
 }

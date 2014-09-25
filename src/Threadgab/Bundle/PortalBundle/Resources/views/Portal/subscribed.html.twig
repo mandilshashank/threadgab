@@ -57,9 +57,9 @@
                       {% for thread in threads %}
                       <tr>
                       <td><a href="/app_dev.php/portal/thread/{{thread.id}}/{{currentforum}}?id=0">{{thread.thdSubject}}</a></td>
-                      <td>{{thread.createdAt|date('Y-m-d H:i:s')}}</td>
-                      <td>Calc num of Replies</td>
-                      <td>Calc last msg time</td>
+                      <td>{{thread.createdAt|date('Y-m-d')}}</td>
+                      <td>{{thread.numReply}}</td>
+                      <td>{{thread.updatedAt|date('Y-m-d')}}</td>
                       </tr>
                       {% endfor %}
                   </tbody>

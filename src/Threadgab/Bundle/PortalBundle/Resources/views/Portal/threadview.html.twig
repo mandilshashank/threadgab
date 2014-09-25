@@ -9,8 +9,9 @@
     {% if arr_replies|length > 0 %}
       {% for reply in arr_replies %}
          <div class="row-fluid">
-            <div class="span1 text-center" style="border: 1px solid #ccc;">
+            <div class="span2 text-center" style="border: 1px solid #ccc;">
                 <img src="{{reply.replyUser.photoUrl}}"></img>
+                <p># Subscibers : {{reply.replyUser.numSub}}</p>
             </div>
 
             <div class="table-responsive span10" style="border: 1px solid #ccc;"> 

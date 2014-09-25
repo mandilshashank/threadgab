@@ -389,6 +389,7 @@ class PortalController extends Controller
 
             $new_thread=new ThreadgabThread();
             $new_thread->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
+            $new_thread->setUpdatedAt(date_create(date("Y-m-d H:i:s", time())));
             $new_thread->setThdCreator($users[0]);
 
             $form = $this->createFormBuilder($new_thread)
