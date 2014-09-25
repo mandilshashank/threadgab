@@ -209,4 +209,32 @@ class ThreadgabUser
     {
         return $this->signature;
     }
+    /**
+     * @var integer
+     */
+    private $numSub;
+
+
+    /**
+     * Set numSub
+     *
+     * @param integer $numSub
+     * @return ThreadgabUser
+     */
+    public function setNumSub($numSub)
+    {
+        $this->numSub = $numSub;
+
+        return $this;
+    }
+
+    /**
+     * Get numSub
+     *
+     * @return integer 
+     */
+    public function getNumSub()
+    {
+        return $this->numSub;
+    }
 }

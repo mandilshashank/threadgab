@@ -16,11 +16,17 @@
             <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
                 <div class="row-fluid">
                   <div class="span11">
-                    <pre>{{reply.replyData|raw}}</pre>
+                    
+                    <pre>{{reply.readData|raw}}</pre>                      
+                    {% if reply.getReplyUser.getSignature != null %}
+                      <hr/>
+                      {{reply.getReplyUser.getSignature|raw}}         
+                    {% endif %}             
+                    
                     {{_self.menu_links(replies[reply.id]|reverse,replies,threadid,currentforum)}}
                   </div>
                   <div class="span1">
-                    <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>     
+                    <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>    
                   </div> 
                 </div>
                 <div id="div_{{reply.id}}" class="hidden" align="center">

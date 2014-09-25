@@ -218,4 +218,13 @@ class ThreadgabReply
     {
         return $this->replyUser;
     }
+
+    public function readData(){
+        $reply_data = '';
+        while(!feof($this->getReplyData())){
+            $reply_data.= fread($this->getReplyData(), 1024);
+        }
+        rewind($this->getReplyData());
+        return $reply_data;
+    }
 }

@@ -49,4 +49,11 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser:
             length: 1000
             fixed: false
             comment: ''
+        numSub:
+            type: integer
+            nullable: false
+            unsigned: false
+            comment: ''
+            default: '0'
+            column: num_sub
     lifecycleCallbacks: {  }
