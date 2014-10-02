@@ -10,7 +10,7 @@
       {% for reply in arr_replies %}
          <div class="row-fluid">
             <div class="span2 text-center" style="border: 1px solid #ccc;">
-                <img src="{{reply.replyUser.photoUrl}}"></img>
+                <a href="/app_dev.php/portal/profile/{{reply.replyUser.getId}}"><img src="{{reply.replyUser.photoUrl}}"></img></a>
                 <p># Subscibers : {{reply.replyUser.numSub}}</p>
             </div>
 
@@ -27,7 +27,7 @@
                     {{_self.menu_links(replies[reply.id]|reverse,replies,threadid,currentforum)}}
                   </div>
                   <div class="span1">
-                    <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>    
+                    <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>  
                   </div> 
                 </div>
                 <div id="div_{{reply.id}}" class="hidden" align="center">
