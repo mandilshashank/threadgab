@@ -18,6 +18,10 @@ portal_profile:
     path:     /portal/profile
     defaults: { _controller: PortalBundle:Portal:profile }
 
+portal_profile_user:
+    path:     /portal/profile/{userid}
+    defaults: { _controller: PortalBundle:Portal:viewprofile }
+
 portal_thread:
     path:     /portal/thread/{threadid}/{currentforum}
     defaults: { _controller: PortalBundle:Portal:threadview }
