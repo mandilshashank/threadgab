@@ -83,10 +83,10 @@ class PortalController extends Controller
             $threads = $query->getResult();
             $subforum  = $query_subforum->getResult();
 
-            //Render the friends thread for each of the friends and yourself
-    		return $this->render('PortalBundle:Portal:main.html.twig', 
-                array('threads' => $threads, 'subforum' => $subforum,
-                    'currentforum' => $currentforum));
+                //Render the friends thread for each of the friends and yourself
+        		return $this->render('PortalBundle:Portal:main.html.twig', 
+                    array('threads' => $threads, 'subforum' => $subforum,
+                        'currentforum' => $currentforum));
 
 		} else {
 			//Session not found. Take to a common error page
@@ -250,6 +250,23 @@ class PortalController extends Controller
         }  
     }
 
+    public function viewprofileAction($userid)
+    {
+        //Get the current user
+        $repository = $this->getDoctrine()->getRepository('ThreadgabDatabaseBundle:ThreadgabUser');
+        $query = $repository->createQueryBuilder('p')
+                        ->where('p.id = :userId')
+                        ->setParameter('userId', $userid)
+                        ->getQuery();
+        $users = $query->getResult();
+
+        if($users != null) {
+            return $this->render('PortalBundle:Portal:viewprofilepage.html.twig', 
+                array('user' => $users[0]));
+        }
+    }
+
+
     public function threadviewAction(Request $request,$threadid,$currentforum)
     {
         //Write code for the subscribed to be shown here
@@ -278,6 +295,11 @@ class PortalController extends Controller
             );
 
             $thread  = $query_thread->getResult();
+
+            //if($thread==null or $users==null or $thread[0]->getThdCreator()!=$users[0]) {
+            //    $url = $this->generateUrl('portal_homepage', array('currentforum' => $currentforum));
+            //    return $this->redirect($url);   
+            //}
 
             $query_replies = $em->createQuery(
                 "SELECT t
