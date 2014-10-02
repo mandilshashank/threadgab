@@ -57,13 +57,6 @@ class ThreadgabThread
     private $updatedAt;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="thd_type", type="string", length=10, nullable=false)
-     */
-    private $thdType;
-
-    /**
      * @var \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser
      *
      * @ORM\ManyToOne(targetEntity="Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser")
@@ -83,7 +76,25 @@ class ThreadgabThread
      */
     private $thdSubforum;
 
+    /**
+     * @var boolean
+     */
+    private $thdIsfriend;
 
+    /**
+     * @var boolean
+     */
+    private $thdIscommunity;
+
+    /**
+     * @var boolean
+     */
+    private $thdIsglobal;
+
+    /**
+     * @var boolean
+     */
+    private $thdIssubscribed;
 
     /**
      * Get id
@@ -211,29 +222,6 @@ class ThreadgabThread
     }
 
     /**
-     * Set thdType
-     *
-     * @param string $thdType
-     * @return ThreadgabThread
-     */
-    public function setThdType($thdType)
-    {
-        $this->thdType = $thdType;
-
-        return $this;
-    }
-
-    /**
-     * Get thdType
-     *
-     * @return string 
-     */
-    public function getThdType()
-    {
-        return $this->thdType;
-    }
-
-    /**
      * Set thdCreator
      *
      * @param \Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser $thdCreator
@@ -305,5 +293,98 @@ class ThreadgabThread
     public function getNumReply()
     {
         return $this->numReply;
+    }
+
+
+    /**
+     * Set thdIsfriend
+     *
+     * @param boolean $thdIsfriend
+     * @return ThreadgabThread
+     */
+    public function setThdIsfriend($thdIsfriend)
+    {
+        $this->thdIsfriend = $thdIsfriend;
+
+        return $this;
+    }
+
+    /**
+     * Get thdIsfriend
+     *
+     * @return boolean 
+     */
+    public function getThdIsfriend()
+    {
+        return $this->thdIsfriend;
+    }
+
+    /**
+     * Set thdIscommunity
+     *
+     * @param boolean $thdIscommunity
+     * @return ThreadgabThread
+     */
+    public function setThdIscommunity($thdIscommunity)
+    {
+        $this->thdIscommunity = $thdIscommunity;
+
+        return $this;
+    }
+
+    /**
+     * Get thdIscommunity
+     *
+     * @return boolean 
+     */
+    public function getThdIscommunity()
+    {
+        return $this->thdIscommunity;
+    }
+
+    /**
+     * Set thdIsglobal
+     *
+     * @param boolean $thdIsglobal
+     * @return ThreadgabThread
+     */
+    public function setThdIsglobal($thdIsglobal)
+    {
+        $this->thdIsglobal = $thdIsglobal;
+
+        return $this;
+    }
+
+    /**
+     * Get thdIsglobal
+     *
+     * @return boolean 
+     */
+    public function getThdIsglobal()
+    {
+        return $this->thdIsglobal;
+    }
+
+    /**
+     * Set thdIssubscribed
+     *
+     * @param boolean $thdIssubscribed
+     * @return ThreadgabThread
+     */
+    public function setThdIssubscribed($thdIssubscribed)
+    {
+        $this->thdIssubscribed = $thdIssubscribed;
+
+        return $this;
+    }
+
+    /**
+     * Get thdIssubscribed
+     *
+     * @return boolean 
+     */
+    public function getThdIssubscribed()
+    {
+        return $this->thdIssubscribed;
     }
 }

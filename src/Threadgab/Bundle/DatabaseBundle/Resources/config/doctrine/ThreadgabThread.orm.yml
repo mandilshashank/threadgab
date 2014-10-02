@@ -48,13 +48,12 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread:
             nullable: true
             comment: ''
             column: updated_at
-        thdType:
-            type: string
+        thdIsfriend:
+            type: boolean
             nullable: false
-            length: 10
-            fixed: false
             comment: ''
-            column: thd_type
+            default: '0'
+            column: thd_isFriend
         numReply:
             type: integer
             nullable: true
@@ -62,6 +61,24 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread:
             comment: ''
             default: '0'
             column: num_reply
+        thdIscommunity:
+            type: boolean
+            nullable: false
+            comment: ''
+            default: '0'
+            column: thd_isCommunity
+        thdIsglobal:
+            type: boolean
+            nullable: true
+            comment: ''
+            default: '0'
+            column: thd_isGlobal
+        thdIssubscribed:
+            type: boolean
+            nullable: true
+            comment: ''
+            default: '0'
+            column: thd_isSubscribed
     manyToOne:
         thdCreator:
             targetEntity: ThreadgabUser

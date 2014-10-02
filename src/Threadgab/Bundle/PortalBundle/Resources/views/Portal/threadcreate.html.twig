@@ -6,10 +6,88 @@
 
 {% block body %}
 
-  <div class="container" align="center">
-    {{form(form)}}
-  </div>
-      
+<div class="container" align="center">
+    {% if error is defined %}
+    	<div class="alert">
+    		<p>Either the Thread Subject or Description not specified</p>
+    	</div>
+	{% endif %}
+    <form id="form_thd_create" method='post'>
+	    <div class="span12">
+	    	<div class="span2">
+		    	<label class="required">
+				    Thread Subject
+				</label>
+			</div>
+			<div class="span9">
+				<input id="thd_subject" class="form-control" type="text" required="required" name="thd_subject"></input>
+			</div>
+	    </div>
+	    <div class="span12" style="margin-top:20px;">
+	    	<div class="span2">
+		    	<label class="required">
+				    Thread Description
+				</label>
+			</div>
+			<div class="span9">
+				<textarea class="tinymce" name="thd_desc" id="thd_desc"></textarea>
+			</div>
+	    </div> 
+	    <div class="span12" style="margin-top:20px;">
+	    	<div class="span3">
+		    	<label class="required">
+				     Thread type
+				</label>
+	    		<select name="thread_is_poll">
+	    			<option value="0">Normal</option>
+					<option value="1">Poll</option>
+					<option value="2">Ask me Anything</option>
+	    		</select>
+	    	</div>
+	    	<div class="span1"></div>	
+	    	<div class="span3">
+	    		<label class="required">
+				     Thread Reach
+				</label>
+				<div class="span1">Friend</div> 
+				<div class="span1"><input type="checkbox" id="thd_rch_friend" name="thd_rch_friend" value="1" checked="true" onclick="reachChanged('thd_rch_friend')"><br></div>
+				<div class="span1">Community</div> 
+				<div class="span1"><input type="checkbox" id="thd_rch_community" name="thd_rch_community" value="1" checked="true" onclick="reachChanged('thd_rch_community')"><br></div>
+				<div class="span1">Global</div> 
+				<div class="span1"><input type="checkbox" id="thd_rch_global" name="thd_rch_global" value="1" checked="true" onclick="reachChanged('thd_rch_global')" ><br></div>
+				<div class="span1">Subscribed</div> 
+				<div class="span1"><input type="checkbox" id="thd_rch_subscribed" name="thd_rch_subscribed" value="1" checked=" true" onclick="reachChanged('thd_rch_subscribed')"><br></div>
+	    	</div>
+	    	<div class="span3">
+	    		<label class="required">
+				     Thread Board
+				</label>
+	    		<select name='subforum'>
+	    			{% for forum in subforums %}
+	    				<option value="{{forum.id}}">{{forum.subForumName}}</option>
+					{% endfor %}
+	    		</select>
+	    	</div>
+	    </div>
+	    <div class="span12" style="margin-top:20px;">
+	    	<input type="submit" id="submit_button" name="submit_button" value="Submit"></input>
+	    </div>        
+    </form>  
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{parent()}}
+  <script type="text/javascript">
+    function reachChanged(id){
+        elem = document.getElementById(id);
+        if(elem.checked){
+        	elem.value=1;
+        } else {
+        	elem.value=0;
+        }
+    }
+  </script>
 {% endblock %}
 
 

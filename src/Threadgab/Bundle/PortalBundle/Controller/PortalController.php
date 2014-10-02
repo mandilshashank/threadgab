@@ -69,7 +69,7 @@ class PortalController extends Controller
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum v
                 WITH t.thdSubforum = v.id
                 WHERE u.facebookid in (".implode(',', $facebook_ids).")  
-                    and (t.thdType='friend' or t.thdType='global')
+                    and (t.thdIsfriend='1' or t.thdIsglobal='1')
                     and v.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
@@ -118,7 +118,7 @@ class PortalController extends Controller
                     Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser v
                     WHERE v.facebookid='".$user_profile->getId()."'
                 )
-                    and (t.thdType='community' or t.thdType='global')
+                    and (t.thdIscommunity='1' or t.thdIsglobal='1')
                     and w.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
@@ -159,7 +159,7 @@ class PortalController extends Controller
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum w
                 WITH t.thdSubforum = w.id
-                WHERE t.thdType='global' 
+                WHERE t.thdIsglobal='1' 
                     and w.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
@@ -211,7 +211,7 @@ class PortalController extends Controller
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum w
                 WITH t.thdSubforum = w.id    
                 WHERE v.facebookid = '".$user_profile->getId()."'  
-                    and (t.thdType='subscribed' or t.thdType='global')
+                    and (t.thdIssubscribed='1' or t.thdIsglobal='1')
                     and w.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
@@ -335,7 +335,6 @@ class PortalController extends Controller
 
             $form = $this->createFormBuilder($new_reply)
                     ->add('replyData', 'textarea', array('label' => 'Reply to Thread', 'attr' => array('class' => 'tinymce')))
-                    //->add('replyTo', 'text', array('label' => 'Reply to'))
                     ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
                     ->getForm();
 
@@ -355,7 +354,7 @@ class PortalController extends Controller
                 }   
             }
 
-            if(isset($_POST)){
+            if(isset($_POST) && isset($_GET['id'])){
                 $form_id=$_GET['id'];
                 if($form_id!=0) {
                 $dynamic_reply=new ThreadgabReply();
@@ -409,19 +408,23 @@ class PortalController extends Controller
                             ->getQuery();
             $users = $query->getResult();
 
+            $query_subforum = $this->getDoctrine()->getManager()->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+                ORDER BY t.id"
+            );
+            $subforums = $query_subforum->getResult();
+
             $new_thread=new ThreadgabThread();
             $new_thread->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
             $new_thread->setUpdatedAt(date_create(date("Y-m-d H:i:s", time())));
             $new_thread->setThdCreator($users[0]);
 
-            $form = $this->createFormBuilder($new_thread)
+            /*$form = $this->createFormBuilder($new_thread)
                     ->add('thdSubject', 'text', array('label'=> 'Thread Subject', 'attr' => array('class' => 'form-control')))
                     ->add('thdDesc', 'textarea', array('label' => 'Thread Description', 'attr' => array('class' => 'tinymce')))
                     ->add('isPoll', 'choice', array('choices' => array(0 => 'No', 1 => 'Yes'),'multiple' => false,
                         'expanded' => false, 'required' => true,'label' => 'Is it a Poll Thread'))
-                    ->add('thdType', 'choice', array('choices' => array('friend' => 'Friend','community' => 'Community',
-                        'global' => 'Global', 'subscribed' => 'Subscribed'),'multiple' => false,
-                        'expanded' => false, 'required' => true,'label' => 'Thread Type', 'attr' => array('class' => 'form-control')))
                     ->add('thdSubforum','entity',array('class' => 'ThreadgabDatabaseBundle:ThreadgabSubforum', 
                         'property' => 'subForumName', 'multiple'=>false, 'expanded'=>false, 'label' => 'Thread Subforum',
                         'attr' => array('class' => 'form-control')))
@@ -443,6 +446,57 @@ class PortalController extends Controller
                                 'currentforum'=>$new_thread->getThdSubforum()->getSubForumName()));
                         return $this->redirect($url);   
                 } 
+            }*/
+
+            if(isset($_POST)){
+                if(!isset($_POST['thd_subject']) or !isset($_POST['thd_desc'])) {
+                    return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
+                        array('subforums' => $subforums, 'error'=>'true'));
+                }
+                $new_thread->setThdSubject($_POST['thd_subject']);
+                $new_thread->setThdDesc($_POST['thd_desc']);
+                $new_thread->setIsPoll($_POST['thread_is_poll']);
+                
+                foreach ($subforums as $subforum) {
+                    if($subforum->getId()==$_POST['subforum']) {
+                        $new_thread->setThdSubforum($subforum);
+                        break;
+                    }
+                }
+
+                if(isset($_POST['thd_rch_friend'])) {
+                    $new_thread->setThdIsfriend($_POST['thd_rch_friend']);
+                } else {
+                    $new_thread->setThdIsfriend('0');   
+                }
+                if(isset($_POST['thd_rch_community'])) {
+                    $new_thread->setThdIscommunity($_POST['thd_rch_community']);
+                } else {
+                    $new_thread->setThdIscommunity('0');
+                }
+                if(isset($_POST['thd_rch_global'])) {
+                    $new_thread->setThdIsglobal($_POST['thd_rch_global']);
+                } else {
+                    $new_thread->setThdIsglobal('0');
+                }
+                if(isset($_POST['thd_rch_subscribed'])) {
+                    $new_thread->setThdIssubscribed($_POST['thd_rch_subscribed']);
+                } else {
+                    $new_thread->setThdIssubscribed('0');
+                }                                                
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($new_thread);
+                $em->flush();
+
+                //Unset the post variables before redirect
+                unset($_POST);
+
+                //Return back to the same thread page
+                $url = $this->generateUrl('portal_thread', 
+                            array('threadid'=>$new_thread->getId(),
+                                'currentforum'=>$new_thread->getThdSubforum()->getSubForumName()));
+                return $this->redirect($url);   
             }
 
             //Get all the replies to this thread and also the replies to those replies
@@ -450,7 +504,7 @@ class PortalController extends Controller
             //If a thread is a poll we need to show different kind of visualization
 
             return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
-                array('form' => $form->createView()));
+                array('subforums' => $subforums));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");
