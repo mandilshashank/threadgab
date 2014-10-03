@@ -241,9 +241,28 @@ class PortalController extends Controller
             $user_profile = ThreadgabLoginBundle::getFacebookRawProfile($session)->asArray();
             $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 100, 100)->asArray();
 
-            return $this->render('PortalBundle:Portal:profilepage.html.twig', 
-                array('user_profile' => $user_profile, 
-                    'user_profile_photo' => $user_profile_photo));
+            $repository = $this->getDoctrine()->getRepository('ThreadgabDatabaseBundle:ThreadgabUser');
+            $query = $repository->createQueryBuilder('p')
+                            ->where('p.facebookid = :facebookId')
+                            ->setParameter('facebookId', $user_profile['id'])
+                            ->getQuery();
+            $users = $query->getResult();
+
+            if($users!=null) {
+
+                if(isset($_POST['user_signature'])) {
+                    $users[0]->setSignature($_POST['user_signature']);
+
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($users[0]);
+                    $em->flush();                    
+                }
+
+                return $this->render('PortalBundle:Portal:profilepage.html.twig', 
+                array('user_profile_photo' => $user_profile_photo, 'user' => $users[0]));
+            }
+
+            return new Response('User with current facebook session not found');
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

@@ -5,7 +5,19 @@
 {% block body %}
 	
 		    
-	<div class="container">
+	<div class="span12" align="center">
   		<img src="{{user_profile_photo.url}}"></img>
+  	</div>
+
+  	<div class="span12" style="margin:20px;">
+  		<form id='signature_change' method="post">
+  			<center><label class="required">
+				    Signature
+			</label></center>
+			<textarea class="tinymce" id="user_signature" name="user_signature">
+				{{user.signature}}
+			</textarea>
+			<center><input type="submit" value="Save" style="margin:20px;"></input></center>
+  		</form>
   	</div>
 {% endblock %}
