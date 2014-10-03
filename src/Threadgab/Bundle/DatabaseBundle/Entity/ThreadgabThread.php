@@ -387,4 +387,32 @@ class ThreadgabThread
     {
         return $this->thdIssubscribed;
     }
+    /**
+     * @var string
+     */
+    private $thdLabel;
+
+
+    /**
+     * Set thdLabel
+     *
+     * @param string $thdLabel
+     * @return ThreadgabThread
+     */
+    public function setThdLabel($thdLabel)
+    {
+        $this->thdLabel = $thdLabel;
+
+        return $this;
+    }
+
+    /**
+     * Get thdLabel
+     *
+     * @return string 
+     */
+    public function getThdLabel()
+    {
+        return $this->thdLabel;
+    }
 }

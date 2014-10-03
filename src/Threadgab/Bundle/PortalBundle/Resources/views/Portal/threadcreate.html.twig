@@ -9,18 +9,27 @@
 <div class="container" align="center">
     {% if error is defined %}
     	<div class="alert">
-    		<p>Either the Thread Subject or Description not specified</p>
+    		<p>{{error}} Either the Thread Subject or Description not specified</p>
     	</div>
 	{% endif %}
     <form id="form_thd_create" method='post'>
 	    <div class="span12">
 	    	<div class="span2">
-		    	<label class="required">
-				    Thread Subject
+	    		<label class="required">
+				    Thread Title
 				</label>
-			</div>
+	    	</div>
 			<div class="span9">
-				<input id="thd_subject" class="form-control" type="text" required="required" name="thd_subject"></input>
+				<div class="span1">
+					<select name="thd_label" style="width:80px;">
+		    			<option value="None">None</option>
+						<option value="NSFW">NSFW</option>
+						<option value="Spoiler">Spoiler</option>
+	    			</select>
+				</div>
+				<div class="span7">
+					<input id="thd_subject" class="form-control" type="text" required="required" name="thd_subject" style="width:90%;"></input>
+				</div>
 			</div>
 	    </div>
 	    <div class="span12" style="margin-top:20px;">

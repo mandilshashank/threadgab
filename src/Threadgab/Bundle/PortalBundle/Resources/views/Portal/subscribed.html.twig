@@ -47,6 +47,7 @@
               <table class="table table-striped">
                   <thead>
                       <tr>
+                          <th>Label</th>
                           <th>Title</th>
                           <th>Start Date</th>
                           <th>Replies</th>
@@ -56,10 +57,11 @@
                   <tbody>
                       {% for thread in threads %}
                       <tr>
-                      <td><a href="/app_dev.php/portal/thread/{{thread.id}}/{{currentforum}}?id=0">{{thread.thdSubject}}</a></td>
-                      <td>{{thread.createdAt|date('Y-m-d')}}</td>
-                      <td>{{thread.numReply}}</td>
-                      <td>{{thread.updatedAt|date('Y-m-d')}}</td>
+                          <td>{% if thread.thdLabel!='None' %} {{thread.thdLabel}} {% endif %}</td>
+                          <td><a href="/app_dev.php/portal/thread/{{thread.id}}/{{currentforum}}?id=0">{{thread.thdSubject}}</a></td>
+                          <td>{{thread.createdAt|date('Y-m-d')}}</td>
+                          <td>{{thread.numReply}}</td>
+                          <td>{{thread.updatedAt|date('Y-m-d')}}</td>
                       </tr>
                       {% endfor %}
                   </tbody>

@@ -448,7 +448,7 @@ class PortalController extends Controller
                 } 
             }*/
 
-            if(isset($_POST)){
+            if(isset($_POST['submit_button'])){
                 if(!isset($_POST['thd_subject']) or !isset($_POST['thd_desc'])) {
                     return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
                         array('subforums' => $subforums, 'error'=>'true'));
@@ -456,6 +456,8 @@ class PortalController extends Controller
                 $new_thread->setThdSubject($_POST['thd_subject']);
                 $new_thread->setThdDesc($_POST['thd_desc']);
                 $new_thread->setIsPoll($_POST['thread_is_poll']);
+                $new_thread->setThdLabel($_POST['thd_label']);
+                $new_thread->setNumReply('0');
                 
                 foreach ($subforums as $subforum) {
                     if($subforum->getId()==$_POST['subforum']) {

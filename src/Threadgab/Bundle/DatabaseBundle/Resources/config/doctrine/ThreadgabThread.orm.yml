@@ -69,16 +69,24 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread:
             column: thd_isCommunity
         thdIsglobal:
             type: boolean
-            nullable: true
+            nullable: false
             comment: ''
             default: '0'
             column: thd_isGlobal
         thdIssubscribed:
             type: boolean
-            nullable: true
+            nullable: false
             comment: ''
             default: '0'
             column: thd_isSubscribed
+        thdLabel:
+            type: string
+            nullable: false
+            length: 10
+            fixed: false
+            comment: ''
+            default: None
+            column: thd_label
     manyToOne:
         thdCreator:
             targetEntity: ThreadgabUser
