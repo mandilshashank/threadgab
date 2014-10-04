@@ -10,7 +10,6 @@ use Facebook\FacebookRedirectLoginHelper;
 
 class ThreadgabLoginBundle extends Bundle
 {
-	  const REDIRECT_URL = "http://shashank.local/app_dev.php/redirect";
 	  const appId = "709757379061795";
 	  const appSecret = "4c042d1893188398229315625fb309eb";
 
@@ -19,16 +18,16 @@ class ThreadgabLoginBundle extends Bundle
       	FacebookSession::setDefaultApplication(self::appId, self::appSecret);
    	}
 
-   	public static function getLoginUrl() {
+   	public static function getLoginUrl($redirectUrl) {
      		//Redirect to Facebook login URL for logging in
-      	$helper = new FacebookRedirectLoginHelper(self::REDIRECT_URL);
+      	$helper = new FacebookRedirectLoginHelper($redirectUrl);
   		  $loginUrl = $helper->getLoginUrl(array('email', 'user_friends', 'public_profile', 'user_photos'));
 
   		  return $loginUrl;
    	}
 
-   	public static function getSession() {
-     		$helper = new FacebookRedirectLoginHelper(self::REDIRECT_URL);
+   	public static function getSession($redirectUrl) {
+     		$helper = new FacebookRedirectLoginHelper($redirectUrl);
 
   		  //Get the session id for the user
   	  	$session = $helper->getSessionFromRedirect();

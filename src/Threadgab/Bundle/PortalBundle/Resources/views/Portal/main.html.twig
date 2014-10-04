@@ -9,14 +9,14 @@
 	   	 		<div id="sidebar-wrapper" >
 			        <ul class="sidebar-nav" id="sidebar">     
 			          {% for forum in subforum %}
-			          <li><a href="/app_dev.php/portal/main/{{forum.subForumName}}">{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+			          <li><a href="{{path('portal_homepage',{'currentforum':forum.subForumName})}}">{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
 			          {% endfor %}
 			        </ul>
 			    </div>
 	    	</div>
 
 	    	<div class="span3 pull-right">
-			        <a class="btn btn-default btn-lg" href="/app_dev.php/portal/thread/create" role="button">Post Thread</a>
+			        <a class="btn btn-default btn-lg" href="{{path('portal_thread_create')}}" role="button">Post Thread</a>
 	    	</div>
 
 	    	<div class="container">
@@ -26,10 +26,10 @@
 			  			<div class="navbar-inner">
 			    			<div class="container">
 			      			<ul class="nav">
-			        	    <li class="active"><a href="/app_dev.php/portal/main/{{currentforum}}">Friend Threads</a></li>
-			        	  	<li><a href="/app_dev.php/portal/community/{{currentforum}}">Community Threads</a>	</li>
-			            	<li><a href="/app_dev.php/portal/global/{{currentforum}}">Global Threads</a></li>
-			            	<li><a href="/app_dev.php/portal/subscribed/{{currentforum}}">Subscribed Threads</a></li>
+			        	    <li class="active"><a href="{{path('portal_homepage',{'currentforum':currentforum})}}">Friend Threads</a></li>
+		                    <li><a href="{{path('portal_community',{'currentforum':currentforum})}}">Community Threads</a> </li>
+		                    <li><a href="{{path('portal_global',{'currentforum':currentforum})}}">Global Threads</a></li>
+		                    <li><a href="{{path('portal_subscribed',{'currentforum':currentforum})}}">Subscribed Threads</a></li>
 			          	</ul>
 			        	</div>
 			        </div>
@@ -54,7 +54,7 @@
 				              {% for thread in threads %}
 				              <tr>
 				              		<td>{% if thread.thdLabel!='None' %} {{thread.thdLabel}} {% endif %}</td>
-			        				<td><a href="/app_dev.php/portal/thread/{{thread.id}}/{{currentforum}}?id=0">{{thread.thdSubject}}</a></td>
+			        				<td><a href="{{path('portal_thread',{'threadid':thread.id,'currentforum':currentforum})}}?id=0">{{thread.thdSubject}}</a></td>
 			        				<td>{{thread.createdAt|date('Y-m-d')}}</td>
 			        				<td>{{thread.numReply}}</td>
 			        				<td>{{thread.updatedAt|date('Y-m-d')}}</td>

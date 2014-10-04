@@ -10,7 +10,7 @@
       {% for reply in arr_replies %}
          <div class="row-fluid">
             <div class="span2 text-center" style="border: 1px solid #ccc;">
-                <a href="/app_dev.php/portal/profile/{{reply.replyUser.getId}}"><img src="{{reply.replyUser.photoUrl}}"></img></a>
+                <a href="{{path('portal_profile_user',{'userid':reply.replyUser.getId})}}"><img src="{{reply.replyUser.photoUrl}}"></img></a>
                 <p># Subscibers : {{reply.replyUser.numSub}}</p>
             </div>
 
@@ -32,7 +32,7 @@
                 </div>
                 <div id="div_{{reply.id}}" class="hidden" align="center">
                     <!--Reply form to reply to specific reply-->
-                    <form id="form_{{reply.id}}" method='POST' action="/app_dev.php/portal/thread/{{threadid}}/{{currentforum}}?id={{reply.id}}">
+                    <form id="form_{{reply.id}}" method='POST' action="{{path('portal_thread',{'threadid':threadid,'currentforum':currentforum})}}?id={{reply.id}}">
                       <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
                       <input type="hidden" id="reply_to_{{reply.id}}" name="reply_to_{{reply.id}}" value="{{reply.id}}"> 
                       <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"></input> 

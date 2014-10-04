@@ -22,8 +22,11 @@ class LoginController extends Controller
 {
     public function indexAction()
     {
+    	$baseURL = $this->container->getParameter('base_url');
+    	$redirectUrl=$baseURL.$this->generateUrl('threadgab_login_redirect');
+
     	//Redirect to Facebook login URL for logging in
-    	$loginUrl = ThreadgabLoginBundle::getLoginUrl();
+    	$loginUrl = ThreadgabLoginBundle::getLoginUrl($redirectUrl);
 
 		$content = $this->renderView(
 		    'ThreadgabLoginBundle:Login:index.html.twig',
@@ -35,11 +38,14 @@ class LoginController extends Controller
 
 	public function getsessionAction()
     {
+    	$baseURL = $this->container->getParameter('base_url');
+    	$redirectUrl=$baseURL.$this->generateUrl('threadgab_login_redirect');
+
     	//Catch the redirected url and find out the session information
 		try {
 
 			//Get the session id for the user
-		  	$session = ThreadgabLoginBundle::getSession();
+		  	$session = ThreadgabLoginBundle::getSession($redirectUrl);
 		  	
 		  	//If we dont get an exception here it means that the sessoin has been active and we are
 		  	//now ready to redirect the user either to the user information page or to the main 
