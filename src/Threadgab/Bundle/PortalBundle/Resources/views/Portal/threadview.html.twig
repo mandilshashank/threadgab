@@ -60,7 +60,7 @@
 	<div class="container-fluid">
     <div class="row-fluid">
       <div class="span1 text-center" style="border: 1px solid #ccc;">
-          <img src="{{threads.getThdCreator.getPhotoUrl}}"></img>
+          <a href="{{path('portal_profile_user',{'userid':threads.getThdCreator.getId})}}"><img src="{{threads.getThdCreator.getPhotoUrl}}"></img></a>
       </div>
 
       <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
