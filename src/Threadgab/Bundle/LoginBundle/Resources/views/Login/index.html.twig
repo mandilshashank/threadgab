@@ -15,7 +15,7 @@
           <div class="navbar-inner">
             <div class="container">
               <ul class="nav">
-                <li class="active"><a href="path('threadgab_login_homepage')">Home</a></li>
+                <li class="active"><a href="{{path('threadgab_login_homepage')}}">Home</a></li>
                 <li><a href="#">Projects (Not Active)</a></li>
                 <li><a href="#">Services (Not Active)</a></li>
                 <li><a href="#">Downloads (Not Active)</a></li>
@@ -61,6 +61,17 @@
         <p>&copy; ThreadGab.com 2014</p>
       </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{parent()}}
+  <script type="text/javascript">
+      window.onload = function() {
+        //Hide the profile link
+        elem=document.getElementById('profile_link');
+        elem.style.display="none";    
+      };
+  </script>
 {% endblock %}
 
 
