@@ -110,6 +110,7 @@ class LoginController extends Controller
 		        $user->setFacebookId($user_profile->getId());
 		        $user->setCreationDate(date_create(date("Y-m-d H:i:s", time())));
 		        $user->setPhotoUrl($user_profile_photo["url"]);
+		        $user->setNumSub('0');
 
 		        $form = $this->createFormBuilder($user)
 		            ->add('emailid', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
