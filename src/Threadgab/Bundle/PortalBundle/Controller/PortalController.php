@@ -475,9 +475,10 @@ class PortalController extends Controller
             }*/
 
             if(isset($_POST['submit_button'])){
-                if(!isset($_POST['thd_subject']) or !isset($_POST['thd_desc'])) {
+                if(!isset($_POST['thd_subject']) or !isset($_POST['thd_desc']) or trim($_POST['thd_subject'])=="" 
+                    or trim(strip_tags($_POST['thd_desc']))=="") {
                     return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
-                        array('subforums' => $subforums, 'error'=>'true'));
+                        array('subforums' => $subforums, 'currentforum'=>$currentforum ,'error'=>'true'));
                 }
                 $new_thread->setThdSubject($_POST['thd_subject']);
                 $new_thread->setThdDesc($_POST['thd_desc']);
