@@ -12,6 +12,7 @@ use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
 use Facebook\GraphUser;
 use Symfony\Component\HttpFoundation\Request;
+use Threadgab\Bundle\PortalBundle\PortalBundle;
 
 if(!isset($_SESSION)) 
 { 
@@ -76,7 +77,7 @@ class PortalController extends Controller
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum v
                 WITH t.thdSubforum = v.id
                 WHERE u.facebookid in (".implode(',', $facebook_ids).")  
-                    and (t.thdIsfriend='1' or t.thdIsglobal='1')
+                    and (t.thdIsfriend='1')
                     and v.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
@@ -125,7 +126,7 @@ class PortalController extends Controller
                     Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser v
                     WHERE v.facebookid='".$user_profile->getId()."'
                 )
-                    and (t.thdIscommunity='1' or t.thdIsglobal='1')
+                    and (t.thdIscommunity='1')
                     and w.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
@@ -218,7 +219,7 @@ class PortalController extends Controller
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum w
                 WITH t.thdSubforum = w.id    
                 WHERE v.facebookid = '".$user_profile->getId()."'  
-                    and (t.thdIssubscribed='1' or t.thdIsglobal='1')
+                    and (t.thdIssubscribed='1')
                     and w.subForumName='".$currentforum."'
                 ORDER BY t.createdAt"
             );
@@ -421,6 +422,7 @@ class PortalController extends Controller
     {
 
         $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+        $final_thread;
         if($session) {
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
@@ -440,11 +442,6 @@ class PortalController extends Controller
                 ORDER BY t.id"
             );
             $subforums = $query_subforum->getResult();
-
-            $new_thread=new ThreadgabThread();
-            $new_thread->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
-            $new_thread->setUpdatedAt(date_create(date("Y-m-d H:i:s", time())));
-            $new_thread->setThdCreator($users[0]);
 
             /*$form = $this->createFormBuilder($new_thread)
                     ->add('thdSubject', 'text', array('label'=> 'Thread Subject', 'attr' => array('class' => 'form-control')))
@@ -479,52 +476,34 @@ class PortalController extends Controller
                     or trim(strip_tags($_POST['thd_desc']))=="") {
                     return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
                         array('subforums' => $subforums, 'currentforum'=>$currentforum ,'error'=>'true'));
-                }
-                $new_thread->setThdSubject($_POST['thd_subject']);
-                $new_thread->setThdDesc($_POST['thd_desc']);
-                $new_thread->setIsPoll($_POST['thread_is_poll']);
-                $new_thread->setThdLabel($_POST['thd_label']);
-                $new_thread->setNumReply('0');
-                
-                foreach ($subforums as $subforum) {
-                    if($subforum->getId()==$_POST['subforum']) {
-                        $new_thread->setThdSubforum($subforum);
-                        break;
-                    }
-                }
+                }                
 
+                $em = $this->getDoctrine()->getManager();
+
+                if(isset($_POST['thd_rch_subscribed'])) {
+                    $final_thread = PortalBundle::createAndPersistThread($subforums, 'subscribed', $em, $_POST['subforum'],
+                        $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
+                } 
                 if(isset($_POST['thd_rch_friend'])) {
-                    $new_thread->setThdIsfriend($_POST['thd_rch_friend']);
-                } else {
-                    $new_thread->setThdIsfriend('0');   
+                    $final_thread = PortalBundle::createAndPersistThread($subforums, 'friends', $em, $_POST['subforum'],
+                        $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
                 }
                 if(isset($_POST['thd_rch_community'])) {
-                    $new_thread->setThdIscommunity($_POST['thd_rch_community']);
-                } else {
-                    $new_thread->setThdIscommunity('0');
+                    $final_thread = PortalBundle::createAndPersistThread($subforums, 'community', $em, $_POST['subforum'],
+                        $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
                 }
                 if(isset($_POST['thd_rch_global'])) {
-                    $new_thread->setThdIsglobal($_POST['thd_rch_global']);
-                } else {
-                    $new_thread->setThdIsglobal('0');
+                    $final_thread = PortalBundle::createAndPersistThread($subforums, 'global', $em, $_POST['subforum'],
+                        $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
                 }
-                if(isset($_POST['thd_rch_subscribed'])) {
-                    $new_thread->setThdIssubscribed($_POST['thd_rch_subscribed']);
-                } else {
-                    $new_thread->setThdIssubscribed('0');
-                }                                                
+                                                               
                 
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($new_thread);
-                $em->flush();
-
                 //Unset the post variables before redirect
                 unset($_POST);
 
                 //Return back to the same thread page
-                $url = $this->generateUrl('portal_thread', 
-                            array('threadid'=>$new_thread->getId(),
-                                'currentforum'=>$new_thread->getThdSubforum()->getSubForumName()));
+                $url = $this->generateUrl('portal_homepage', 
+                            array('currentforum'=>$final_thread->getThdSubforum()->getSubForumName()));
                 return $this->redirect($url);   
             }
 
