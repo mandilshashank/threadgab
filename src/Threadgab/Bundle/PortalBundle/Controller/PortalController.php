@@ -25,6 +25,13 @@ class PortalController extends Controller
     {
     	//Get the user data using the fb_token session variable
 
+        //Check if the fb_token session variable is available and then proceed is it is.
+        if(!isset($_SESSION['fb_token']))
+        {
+            //Session not found. Take to a common error page
+            return new Response("FB Token not found at the Main portal Page. Please relogin into Facebook at the main website page");
+        }
+
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
 
@@ -410,7 +417,7 @@ class PortalController extends Controller
         //   page for this.. Make this page according to the thread view page skeleton provided by Mark"); 
     }
 
-    public function threadcreateAction(Request $request)
+    public function threadcreateAction(Request $request,$currentforum)
     {
 
         $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
@@ -525,7 +532,7 @@ class PortalController extends Controller
             //If a thread is a poll we need to show different kind of visualization
 
             return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
-                array('subforums' => $subforums));
+                array('subforums' => $subforums,'currentforum'=>$currentforum));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

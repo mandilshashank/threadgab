@@ -22,10 +22,11 @@ portal_profile_user:
     path:     /portal/profile/{userid}
     defaults: { _controller: PortalBundle:Portal:viewprofile }
 
+portal_thread_create:
+    path:     /portal/thread/create/{currentforum}
+    defaults: { _controller: PortalBundle:Portal:threadcreate }
+
 portal_thread:
     path:     /portal/thread/{threadid}/{currentforum}
     defaults: { _controller: PortalBundle:Portal:threadview }
 
-portal_thread_create:
-    path:     /portal/thread/create
-    defaults: { _controller: PortalBundle:Portal:threadcreate }

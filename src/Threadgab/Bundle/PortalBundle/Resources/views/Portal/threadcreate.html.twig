@@ -73,7 +73,11 @@
 				</label>
 	    		<select name='subforum'>
 	    			{% for forum in subforums %}
-	    				<option value="{{forum.id}}">{{forum.subForumName}}</option>
+	    				{% if currentforum == forum.subForumName %}
+	    					<option value="{{forum.id}}" selected="true">{{forum.subForumName}}</option>
+	    				{% else %}
+							<option value="{{forum.id}}">{{forum.subForumName}}</option>  				
+						{% endif %}
 					{% endfor %}
 	    		</select>
 	    	</div>
