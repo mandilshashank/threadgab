@@ -334,7 +334,7 @@ class PortalController extends Controller
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.replyUser=u.id
                 WHERE t.thd=".$threadid.
-                " ORDER BY t.id desc"
+                " ORDER BY t.id asc"
 
             );
 
