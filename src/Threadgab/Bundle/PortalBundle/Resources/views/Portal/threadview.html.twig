@@ -10,6 +10,7 @@
             {% if reply.getReplyTo == parentreply.getId %}
 
                 <div class="span{{ spansize-1 }}" align="center" style="text-align: center;border-style: dotted;border-width: 1">
+                    {# TODO:Change the someone to the user's name #}
                     <a href="{{path('portal_profile_user',{'userid':parentreply.replyUser.getId})}}">Someone</a> said :
                     <pre>{{parentreply.readData|raw}}</pre>
 
@@ -39,7 +40,7 @@
 	<div class="container-fluid">
     <div class="row-fluid">
       <div class="span1 text-center" style="border: 1px solid #ccc;">
-          <a href="{{path('portal_profile_user',{'userid':threads.getThdCreator.getId})}}"><img src="{{threads.getThdCreator.getPhotoUrl}}"></img></a>
+          <a href="{{path('portal_profile_user',{'userid':threads.getThdCreator.getId})}}"><img src="{{threads.getThdCreator.getPhotoUrl}}"/></a>
       </div>
 
       <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
@@ -53,7 +54,7 @@
         {% for reply in replies %}
             <div class="row-fluid" style="margin-top:20px">
                 <div class="span2 text-center" style="border: 1px solid #ccc;">
-                <a href="{{path('portal_profile_user',{'userid':reply.replyUser.getId})}}"><img src="{{reply.replyUser.photoUrl}}"></img></a>
+                <a href="{{path('portal_profile_user',{'userid':reply.replyUser.getId})}}"><img src="{{reply.replyUser.photoUrl}}"/></a>
                 <p># Subscribers : {{reply.replyUser.numSub}}</p>
                 </div>
 
@@ -85,7 +86,7 @@
                         <form id="form_{{reply.id}}" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum})}}?id={{reply.id}}">
                         <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
                         <input type="hidden" id="reply_to_{{reply.id}}" name="reply_to_{{reply.id}}" value="{{reply.id}}">
-                        <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"></input>
+                        <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"/>
                         </form>
                     </div>
                 </div>
