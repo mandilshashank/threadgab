@@ -9,7 +9,7 @@
 <div class="container" align="center">
     {% if error is defined %}
     	<div class="alert">
-    		<p>Either the Thread Subject or Description not specified</p>
+    		<p>{{error}}</p>
     	</div>
 	{% endif %}
     <form id="form_thd_create" method='post'>
@@ -22,14 +22,24 @@
 			<div class="span9">
 				<div class="span1">
 					<select name="thd_label" style="width:80px;">
-		    			<option value="None">None</option>
-						<option value="NSFW">NSFW</option>
-						<option value="Spoiler">Spoiler</option>
+                        {% if POST is defined %}
+                            <option value="None" {% if POST['thd_label']=='None' %} selected="true" {% endif %}>None</option>
+                            <option value="NSFW" {% if POST['thd_label']=='NSFW' %} selected="true" {% endif %}>NSFW</option>
+                            <option value="Spoiler" {% if POST['thd_label']=='Spoiler' %} selected="true" {% endif %}>Spoiler</option>
+                        {% else %}
+                            <option value="None">None</option>
+                            <option value="NSFW">NSFW</option>
+                            <option value="Spoiler">Spoiler</option>
+                        {% endif %}
 	    			</select>
 				</div>
 				<div class="span7">
-					<input id="thd_subject" class="form-control" type="text" required="required" name="thd_subject" style="width:90%;"></input>
-				</div>
+                    {% if POST is defined %}
+					    <input id="thd_subject" value="{{POST['thd_subject']}}" class="form-control" type="text" required="required" name="thd_subject" style="width:90%;"></input>
+				    {% else %}
+                        <input id="thd_subject" class="form-control" type="text" required="required" name="thd_subject" style="width:90%;"></input>
+                    {% endif %}
+                </div>
 			</div>
 	    </div>
 	    <div class="span12" style="margin-top:20px;">
@@ -39,18 +49,50 @@
 				</label>
 			</div>
 			<div class="span9">
-				<textarea class="tinymce" name="thd_desc" id="thd_desc"></textarea>
+                {% if POST is defined %}
+                    <textarea class="tinymce" name="thd_desc" id="thd_desc">{{ POST['thd_desc'] }}</textarea>
+                {% else %}
+                    <textarea class="tinymce" name="thd_desc" id="thd_desc"></textarea>
+                {% endif %}
+
 			</div>
+	    </div>
+	    <div class="span12" id="polldiv" style="{% if POST is defined %}display:block{% else %}display:none{% endif %};margin-top:20px;">
+            {% set counter = 1 %}
+            {% if POST is defined %}
+                {% for key,val in POST %}
+                    {% if 'poll_input' in key %}
+                        {% set counter = key|replace({'poll_input_':''}) + 1 %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if POST is defined %}
+                <center><button onclick="addAnswer('polldiv',{{ counter }});">Add Answer</button></center>
+                {% for key,val in POST %}
+                    {% if 'poll_input' in key %}
+                        <div id="poll_div_{{ key|replace({'poll_input_':''}) }}">
+                        <input type='text' id='{{ key }}' name='{{ key }}' value="{{ val }}" style="margin-right:10px;"></input>
+                        <button onclick="removeAnswer('polldiv',{{ key|replace({'poll_input_':''}) }});">x</button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
 	    </div> 
 	    <div class="span12" style="margin-top:20px;">
 	    	<div class="span3">
 		    	<label class="required">
 				     Thread type
 				</label>
-	    		<select name="thread_is_poll">
-	    			<option value="0">Normal</option>
-					<option value="1">Poll</option>
-					<option value="2">Ask me Anything</option>
+	    		<select id="select_thread_is_poll" name="thread_is_poll" onchange="showPolling('select_thread_is_poll','polldiv');">
+                    {% if POST is defined %}
+                        <option value="0" {% if POST['thread_is_poll']==0 %} selected="true" {% endif %} >Normal</option>
+                        <option value="1" {% if POST['thread_is_poll']==1 %} selected="true" {% endif %}>Poll</option>
+                        <option value="2" {% if POST['thread_is_poll']==2 %} selected="true" {% endif %}>Ask me Anything</option>
+                    {% else %}
+                        <option value="0">Normal</option>
+                        <option value="1">Poll</option>
+                        <option value="2">Ask me Anything</option>
+                    {% endif %}
 	    		</select>
 	    	</div>
 	    	<div class="span1"></div>	
@@ -59,13 +101,21 @@
 				     Thread Reach
 				</label>
 				<div class="span1">Friend</div> 
-				<div class="span1"><input type="checkbox" id="thd_rch_friend" name="thd_rch_friend" value="1" checked="true" onclick="reachChanged('thd_rch_friend')"><br></div>
+				<div class="span1"><input type="checkbox" id="thd_rch_friend" name="thd_rch_friend" value="1"
+                            {% if POST is defined and 'thd_rch_friend' not in POST|keys %} {% else %} checked {% endif %}
+                            onclick="reachChanged('thd_rch_friend')"/><br></div>
 				<div class="span1">Community</div> 
-				<div class="span1"><input type="checkbox" id="thd_rch_community" name="thd_rch_community" value="1" checked="true" onclick="reachChanged('thd_rch_community')"><br></div>
+				<div class="span1"><input type="checkbox" id="thd_rch_community" name="thd_rch_community" value="1"
+                            {% if POST is defined and 'thd_rch_community' not in POST|keys %} {% else %} checked {% endif %}
+                            onclick="reachChanged('thd_rch_community')"><br></div>
 				<div class="span1">Global</div> 
-				<div class="span1"><input type="checkbox" id="thd_rch_global" name="thd_rch_global" value="1" checked="true" onclick="reachChanged('thd_rch_global')" ><br></div>
+				<div class="span1"><input type="checkbox" id="thd_rch_global" name="thd_rch_global" value="1"
+                            {% if POST is defined and 'thd_rch_global' not in POST|keys %} {% else %} checked {% endif %}
+                            onclick="reachChanged('thd_rch_global')" ><br></div>
 				<div class="span1">Subscribed</div> 
-				<div class="span1"><input type="checkbox" id="thd_rch_subscribed" name="thd_rch_subscribed" value="1" checked=" true" onclick="reachChanged('thd_rch_subscribed')"><br></div>
+				<div class="span1"><input type="checkbox" id="thd_rch_subscribed" name="thd_rch_subscribed" value="1"
+                            {% if POST is defined and 'thd_rch_subscribed' not in POST|keys %} {% else %} checked {% endif %}
+                            onclick="reachChanged('thd_rch_subscribed')"><br></div>
 	    	</div>
 	    	<div class="span3">
 	    		<label class="required">
@@ -73,11 +123,16 @@
 				</label>
 	    		<select name='subforum'>
 	    			{% for forum in subforums %}
-	    				{% if currentforum == forum.subForumName %}
-	    					<option value="{{forum.id}}" selected="true">{{forum.subForumName}}</option>
-	    				{% else %}
-							<option value="{{forum.id}}">{{forum.subForumName}}</option>  				
-						{% endif %}
+	    				{% if POST is not defined %}
+                            {% if currentforum == forum.subForumName %}
+                                <option value="{{forum.id}}" selected="true">{{forum.subForumName}}</option>
+                            {% else %}
+                                <option value="{{forum.id}}">{{forum.subForumName}}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="{{forum.id}}" {% if POST['subforum']==forum.id %}
+                                selected="true" {% endif %}>{{forum.subForumName}}</option>
+                        {% endif %}
 					{% endfor %}
 	    		</select>
 	    	</div>
@@ -100,6 +155,35 @@
         	elem.value=0;
         }
     }
+
+    function showPolling(selectid, divid){
+    	sel_elem = document.getElementById(selectid);
+    	elem = document.getElementById(divid);
+    	if(sel_elem.selectedIndex=='1'){
+    		elem.innerHTML="<center><button onclick=\"addAnswer('polldiv');\">Add Answer</button></center>"
+    		elem.style.display='block';
+    	} else {
+    		elem.innerHTML="";
+    		elem.style.display='none';
+    	}
+    }
+
+    function addAnswer(divid, count=1){
+        elem = document.getElementById(divid);
+        new_div = document.createElement("div");
+        new_div.id = "poll_div_"+count;
+        var html = "<input type='text' id='poll_input_"+count+"' name='poll_input_"+
+                count+"' style=\"margin-right:10px;\"></input><button onclick=\"removeAnswer('"+divid+"',"+count+
+                ");\">x</button>";
+        new_div.innerHTML=html;
+		elem.appendChild(new_div);
+	}
+
+	function removeAnswer(divid, num){
+		elem = document.getElementById('poll_div_'+num);
+		elem.parentNode.removeChild(elem);
+	}
+
   </script>
 {% endblock %}
 

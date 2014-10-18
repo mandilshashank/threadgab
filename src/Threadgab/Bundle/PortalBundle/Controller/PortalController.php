@@ -420,9 +420,8 @@ class PortalController extends Controller
 
     public function threadcreateAction(Request $request,$currentforum)
     {
-
         $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
-        $final_thread;
+        $final_thread="";
         if($session) {
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
@@ -443,58 +442,55 @@ class PortalController extends Controller
             );
             $subforums = $query_subforum->getResult();
 
-            /*$form = $this->createFormBuilder($new_thread)
-                    ->add('thdSubject', 'text', array('label'=> 'Thread Subject', 'attr' => array('class' => 'form-control')))
-                    ->add('thdDesc', 'textarea', array('label' => 'Thread Description', 'attr' => array('class' => 'tinymce')))
-                    ->add('isPoll', 'choice', array('choices' => array(0 => 'No', 1 => 'Yes'),'multiple' => false,
-                        'expanded' => false, 'required' => true,'label' => 'Is it a Poll Thread'))
-                    ->add('thdSubforum','entity',array('class' => 'ThreadgabDatabaseBundle:ThreadgabSubforum', 
-                        'property' => 'subForumName', 'multiple'=>false, 'expanded'=>false, 'label' => 'Thread Subforum',
-                        'attr' => array('class' => 'form-control')))
-                    ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
-                    ->getForm();
-
-            if ($request->isMethod('POST')) {
-                $form->submit($request->request->get($form->getName()));
-
-                if ($form->isValid()) {
-                        //Persist the user to the database
-                        $em = $this->getDoctrine()->getManager();
-                        $em->persist($new_thread);
-                        $em->flush();
-
-                        //Return back to the same thread page
-                        $url = $this->generateUrl('portal_thread', 
-                            array('threadid'=>$new_thread->getId(),
-                                'currentforum'=>$new_thread->getThdSubforum()->getSubForumName()));
-                        return $this->redirect($url);   
-                } 
-            }*/
-
             if(isset($_POST['submit_button'])){
                 if(!isset($_POST['thd_subject']) or !isset($_POST['thd_desc']) or trim($_POST['thd_subject'])=="" 
                     or trim(strip_tags($_POST['thd_desc']))=="") {
                     return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
-                        array('subforums' => $subforums, 'currentforum'=>$currentforum ,'error'=>'true'));
-                }                
+                        array('subforums' => $subforums, 'currentforum'=>$currentforum ,'error'=>'Either the Thread Subject 
+                            or Description not specified','POST'=>$_POST));
+                }
+
+                //This means it is a poll thread and we need to check if there are any answers present or not before submitting
+                               
 
                 $em = $this->getDoctrine()->getManager();
+
+                if($_POST['thread_is_poll']==1)
+                {
+                    $isAnswerPresent=false;
+                    foreach( $_POST as $key => $val )
+                    {
+                        //Check if any postvariables are present or not
+                        if (strpos($key,'poll_input_') !== false) {
+                            $isAnswerPresent=true;
+                        }
+                    }
+                    if(!$isAnswerPresent){
+                        return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
+                        array('subforums' => $subforums, 'currentforum'=>$currentforum ,'error'=>'No Answers were provided 
+                            for the Poll type thread','POST'=>$_POST));
+                    } 
+                }
 
                 if(isset($_POST['thd_rch_subscribed'])) {
                     $final_thread = PortalBundle::createAndPersistThread($subforums, 'subscribed', $em, $_POST['subforum'],
                         $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
+                    PortalBundle::createThreadPolls($final_thread,$em);
                 } 
                 if(isset($_POST['thd_rch_friend'])) {
                     $final_thread = PortalBundle::createAndPersistThread($subforums, 'friends', $em, $_POST['subforum'],
                         $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
+                    PortalBundle::createThreadPolls($final_thread,$em);
                 }
                 if(isset($_POST['thd_rch_community'])) {
                     $final_thread = PortalBundle::createAndPersistThread($subforums, 'community', $em, $_POST['subforum'],
                         $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
+                    PortalBundle::createThreadPolls($final_thread,$em);
                 }
                 if(isset($_POST['thd_rch_global'])) {
                     $final_thread = PortalBundle::createAndPersistThread($subforums, 'global', $em, $_POST['subforum'],
                         $users[0], $_POST['thd_subject'], $_POST['thd_desc'], $_POST['thread_is_poll'], $_POST['thd_label']);
+                    PortalBundle::createThreadPolls($final_thread,$em);
                 }
                                                                
                 
@@ -510,9 +506,13 @@ class PortalController extends Controller
             //Get all the replies to this thread and also the replies to those replies
 
             //If a thread is a poll we need to show different kind of visualization
-
-            return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
-                array('subforums' => $subforums,'currentforum'=>$currentforum));
+            if(isset($_POST['thd_label'])){
+                return $this->render('PortalBundle:Portal:threadcreate.html.twig',
+                    array('subforums' => $subforums,'currentforum'=>$currentforum,'POST'=>$_POST));
+            } else {
+                return $this->render('PortalBundle:Portal:threadcreate.html.twig',
+                    array('subforums' => $subforums,'currentforum'=>$currentforum));
+            }
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");
