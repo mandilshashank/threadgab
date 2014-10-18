@@ -79,7 +79,7 @@ class PortalController extends Controller
                 WHERE u.facebookid in (".implode(',', $facebook_ids).")  
                     and (t.thdIsfriend='1')
                     and v.subForumName='".$currentforum."'
-                ORDER BY t.createdAt"
+                ORDER BY t.createdAt desc"
             );
 
             $query_subforum = $em->createQuery(
@@ -128,7 +128,7 @@ class PortalController extends Controller
                 )
                     and (t.thdIscommunity='1')
                     and w.subForumName='".$currentforum."'
-                ORDER BY t.createdAt"
+                ORDER BY t.createdAt desc"
             );
 
             $query_subforum = $em->createQuery(
@@ -169,7 +169,7 @@ class PortalController extends Controller
                 WITH t.thdSubforum = w.id
                 WHERE t.thdIsglobal='1' 
                     and w.subForumName='".$currentforum."'
-                ORDER BY t.createdAt"
+                ORDER BY t.createdAt desc"
             );
 
             //Query to get all the subforums from the database
@@ -221,7 +221,7 @@ class PortalController extends Controller
                 WHERE v.facebookid = '".$user_profile->getId()."'  
                     and (t.thdIssubscribed='1')
                     and w.subForumName='".$currentforum."'
-                ORDER BY t.createdAt"
+                ORDER BY t.createdAt desc"
             );
 
             $threads = $query->getResult();
