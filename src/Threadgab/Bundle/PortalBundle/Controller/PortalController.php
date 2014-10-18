@@ -334,25 +334,11 @@ class PortalController extends Controller
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.replyUser=u.id
                 WHERE t.thd=".$threadid.
-                " ORDER BY t.replyTo,t.id ASC"
+                " ORDER BY t.id desc"
 
             );
 
-            $final_reply_array=array();
-            $final_reply_array[0]=array();
-            $reply_id_check_array = array();
-
             $replies  = $query_replies->getResult();
-
-            //return new Response("Noresponse");
-
-            foreach ($replies as $reply) {
-                if(!in_array($reply->getId(), $reply_id_check_array)) {
-                   $final_reply_array[$reply->getId()]=array();
-                   array_push($reply_id_check_array, $reply->getId());
-                }
-                array_push($final_reply_array[$reply->getReplyTo()], $reply); 
-            } 
 
             $new_reply=new ThreadgabReply();
             $new_reply->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
@@ -407,7 +393,7 @@ class PortalController extends Controller
 
             return $this->render('PortalBundle:Portal:threadview.html.twig', 
                 array('threads' => $thread[0],'currentforum' => $currentforum,
-                    'user_profile_photo' => $user_profile_photo, 'replies' => $final_reply_array,
+                    'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
                     'form' => $form->createView()));
         } else {
             //Session not found. Take to a common error page

@@ -4,43 +4,22 @@
 	{{parent()}}
 {% endblock %}
 
-{# Macro for printing out replies to a thread recursively #}
-{% macro menu_links(arr_replies,replies,threadid,currentforum) %}
-    {% if arr_replies|length > 0 %}
-      {% for reply in arr_replies %}
-         <div class="row-fluid">
-            <div class="span2 text-center" style="border: 1px solid #ccc;">
-                <a href="{{path('portal_profile_user',{'userid':reply.replyUser.getId})}}"><img src="{{reply.replyUser.photoUrl}}"></img></a>
-                <p># Subscribers : {{reply.replyUser.numSub}}</p>
-            </div>
+{% macro printParentReplies(replies,reply,count,spansize) %}
+    {% if count<4 %}
+        {% for parentreply in replies %}
+            {% if reply.getReplyTo == parentreply.getId %}
 
-            <div class="table-responsive span10" style="border: 1px solid #ccc;"> 
-                <div class="row-fluid">
-                  <div class="span11">
-                    
-                    <pre>{{reply.readData|raw}}</pre>                      
-                    {% if reply.getReplyUser.getSignature != null %}
-                      <hr/>
-                      {{reply.getReplyUser.getSignature|raw}}         
-                    {% endif %}             
-                    
-                    {{_self.menu_links(replies[reply.id]|reverse,replies,threadid,currentforum)}}
-                  </div>
-                  <div class="span1">
-                    <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>  
-                  </div> 
+                <div class="span{{ spansize-1 }}" align="center" style="text-align: center;border-style: dotted;border-width: 1">
+                    <a href="{{path('portal_profile_user',{'userid':parentreply.replyUser.getId})}}">Someone</a> said :
+                    <pre>{{parentreply.readData|raw}}</pre>
+
+                    {% if parentreply.getReplyTo !=0 %}
+                        {{ _self.printParentReplies(replies,parentreply,count+1,spansize-1) }}
+                    {% endif %}
                 </div>
-                <div id="div_{{reply.id}}" class="hidden" align="center">
-                    <!--Reply form to reply to specific reply-->
-                    <form id="form_{{reply.id}}" method='POST' action="{{path('portal_thread',{'threadid':threadid,'currentforum':currentforum})}}?id={{reply.id}}">
-                      <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
-                      <input type="hidden" id="reply_to_{{reply.id}}" name="reply_to_{{reply.id}}" value="{{reply.id}}"> 
-                      <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"></input> 
-                    </form>  
-                </div>
-            </div>           
-        </div>
-      {% endfor %}  
+
+            {% endif %}
+        {% endfor %}
     {% endif %}
 {% endmacro %}
 
@@ -70,8 +49,48 @@
      
     {% import _self as macros %}
 
-    {% if replies|length > 0 %}  
-      {{macros.menu_links(replies[0]|reverse,replies,threads.id,currentforum)}}
+    {% if replies|length > 0 %}
+        {% for reply in replies %}
+            <div class="row-fluid" style="margin-top:20px">
+                <div class="span2 text-center" style="border: 1px solid #ccc;">
+                <a href="{{path('portal_profile_user',{'userid':reply.replyUser.getId})}}"><img src="{{reply.replyUser.photoUrl}}"></img></a>
+                <p># Subscribers : {{reply.replyUser.numSub}}</p>
+                </div>
+
+                <div class="table-responsive span10" style="border: 1px solid #ccc;">
+                    <div class="row-fluid">
+                        <div class="span11">
+
+                            <pre>{{reply.readData|raw}}</pre>
+
+                            {% if reply.getReplyTo !=0 %}
+                                {{ macros.printParentReplies(replies,reply,1,11) }}
+                            {% endif %}
+
+                        </div>
+
+                        <div class="span1">
+                        <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>
+                        </div>
+
+                    </div>
+
+                    <hr/>
+                    {% if reply.getReplyUser.getSignature != null %}
+                        {{reply.getReplyUser.getSignature|raw}}
+                    {% endif %}
+
+                    <div id="div_{{reply.id}}" class="hidden" align="center">
+                    <!--Reply form to reply to specific reply-->
+                        <form id="form_{{reply.id}}" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum})}}?id={{reply.id}}">
+                        <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
+                        <input type="hidden" id="reply_to_{{reply.id}}" name="reply_to_{{reply.id}}" value="{{reply.id}}">
+                        <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"></input>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     {% endif %}  
   </div>
 
