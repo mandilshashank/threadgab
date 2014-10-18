@@ -461,13 +461,13 @@ class PortalController extends Controller
                     foreach( $_POST as $key => $val )
                     {
                         //Check if any postvariables are present or not
-                        if (strpos($key,'poll_input_') !== false) {
+                        if (strpos($key,'poll_input_') !== false and $val!="") {
                             $isAnswerPresent=true;
                         }
                     }
                     if(!$isAnswerPresent){
                         return $this->render('PortalBundle:Portal:threadcreate.html.twig', 
-                        array('subforums' => $subforums, 'currentforum'=>$currentforum ,'error'=>'No Answers were provided 
+                        array('subforums' => $subforums, 'currentforum'=>$currentforum ,'error'=>'No Answers or empty answers were provided
                             for the Poll type thread','POST'=>$_POST));
                     } 
                 }

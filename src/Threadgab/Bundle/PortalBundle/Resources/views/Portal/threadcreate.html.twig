@@ -168,7 +168,11 @@
     	}
     }
 
-    function addAnswer(divid, count=1){
+    function addAnswer(divid, count){
+        count = (typeof count === "undefined") ? 1 : count;
+        while(document.getElementById("poll_div_"+count)){
+            count++;
+        }
         elem = document.getElementById(divid);
         new_div = document.createElement("div");
         new_div.id = "poll_div_"+count;
