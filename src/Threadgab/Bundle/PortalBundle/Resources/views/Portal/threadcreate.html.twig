@@ -35,9 +35,9 @@
 				</div>
 				<div class="span7">
                     {% if POST is defined %}
-					    <input id="thd_subject" value="{{POST['thd_subject']}}" class="form-control" type="text" required="required" name="thd_subject" style="width:90%;"></input>
+					    <input id="thd_subject" value="{{POST['thd_subject']}}" class="form-control" maxlength="140" type="text" required="required" name="thd_subject" style="width:90%;"></input>
 				    {% else %}
-                        <input id="thd_subject" class="form-control" type="text" required="required" name="thd_subject" style="width:90%;"></input>
+                        <input id="thd_subject" class="form-control" type="text" required="required" maxlength="140" name="thd_subject" style="width:90%;"></input>
                     {% endif %}
                 </div>
 			</div>
