@@ -4,21 +4,21 @@
 	{{parent()}}
 {% endblock %}
 
-{% macro printParentReplies(replies,reply,count,spansize) %}
+{% macro printParentReplies(replies,reply,count) %}
     {% if count<4 %}
         {% for parentreply in replies %}
             {% if reply.getReplyTo == parentreply.getId %}
+                <div class="span{{ 12 }}" align="center" style="text-align: center;border-style:groove;border-width: 1">
+                    <center>
+                    {% if parentreply.getReplyTo !=0 %}
+                        {{ _self.printParentReplies(replies,parentreply,count+1) }}
+                    {% endif %}
 
-                <div class="span{{ spansize-1 }}" align="center" style="text-align: center;border-style: dotted;border-width: 1">
                     {# TODO:Change the someone to the user's name #}
                     <a href="{{path('portal_profile_user',{'userid':parentreply.replyUser.getId})}}">Someone</a> said :
-                    <pre>{{parentreply.readData|raw}}</pre>
-
-                    {% if parentreply.getReplyTo !=0 %}
-                        {{ _self.printParentReplies(replies,parentreply,count+1,spansize-1) }}
-                    {% endif %}
+                    <br/>{{parentreply.readData|raw}}
+                    </center>
                 </div>
-
             {% endif %}
         {% endfor %}
     {% endif %}
@@ -61,13 +61,12 @@
                 <div class="table-responsive span10" style="border: 1px solid #ccc;">
                     <div class="row-fluid">
                         <div class="span11">
-
-                            <pre>{{reply.readData|raw}}</pre>
-
+                            <center>
                             {% if reply.getReplyTo !=0 %}
-                                {{ macros.printParentReplies(replies,reply,1,11) }}
+                                {{ macros.printParentReplies(replies,reply,1) }}
                             {% endif %}
-
+                            <br/>{{reply.readData|raw}}
+                            </center>
                         </div>
 
                         <div class="span1">
@@ -77,6 +76,7 @@
                     </div>
 
                     <hr/>
+
                     {% if reply.getReplyUser.getSignature != null %}
                         {{reply.getReplyUser.getSignature|raw}}
                     {% endif %}
