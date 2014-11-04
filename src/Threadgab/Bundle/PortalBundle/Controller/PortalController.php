@@ -305,7 +305,7 @@ class PortalController extends Controller
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
             $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
-        
+
             //Get the current user
             $repository = $this->getDoctrine()->getRepository('ThreadgabDatabaseBundle:ThreadgabUser');
             $query = $repository->createQueryBuilder('p')
@@ -322,6 +322,18 @@ class PortalController extends Controller
             );
 
             $thread  = $query_thread->getResult();
+
+            if(isset($_POST['input_thd_title']) and $_POST['input_thd_title']!=""){
+                $thread[0]->setThdSubject($_POST['input_thd_title']);
+                $em->persist($thread[0]);
+                $em->flush();
+            }
+
+            if(isset($_POST['textarea_desc']) and $_POST['textarea_desc']!=""){
+                $thread[0]->setThdDesc($_POST['textarea_desc']);
+                $em->persist($thread[0]);
+                $em->flush();
+            }
 
             //if($thread==null or $users==null or $thread[0]->getThdCreator()!=$users[0]) {
             //    $url = $this->generateUrl('portal_homepage', array('currentforum' => $currentforum));
@@ -362,7 +374,7 @@ class PortalController extends Controller
 
                     //Return back to the same thread page
                     $url = $this->generateUrl('portal_thread', 
-                        array('threadid'=>$threadid,'currentforum'=>$currentforum));
+                        array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile));
                     return $this->redirect($url."?id=0");
                 }   
             }
@@ -382,7 +394,7 @@ class PortalController extends Controller
                 $em->flush();
 
                 $url = $this->generateUrl('portal_thread', 
-                        array('threadid'=>$threadid,'currentforum'=>$currentforum));
+                        array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile));
                 return $this->redirect($url."?id=0");
                 }
             }
@@ -394,7 +406,7 @@ class PortalController extends Controller
             return $this->render('PortalBundle:Portal:threadview.html.twig', 
                 array('threads' => $thread[0],'currentforum' => $currentforum,
                     'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
-                    'form' => $form->createView()));
+                    'form' => $form->createView(), 'user_profile'=>$user_profile));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

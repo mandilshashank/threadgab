@@ -31,8 +31,9 @@
           <p>{{currentforum}}</p>
       </div>
 
-      <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
-          <p>{{threads.thdSubject|nl2br}}</p>
+      <div class="table-responsive span11" style="border: 1px solid #ccc;">
+          {#The change should be possible only if current user is the user who generated this thread#}
+          <p id="thd_title" {% if user_profile.id==threads.getThdCreator.getFacebookid %}onclick="changeToInput('thd_title');"{% endif %}>{{threads.thdSubject|nl2br}}</p>
       </div>
     </div>
   </div> 
@@ -43,9 +44,23 @@
           <a href="{{path('portal_profile_user',{'userid':threads.getThdCreator.getId})}}"><img src="{{threads.getThdCreator.getPhotoUrl}}"/></a>
       </div>
 
-      <div class="table-responsive span11" style="border: 1px solid #ccc;"> 
-          <pre>{{threads.thdDesc|raw|nl2br}}</pre>
-      </div>
+      {% if user_profile.id==threads.getThdCreator.getFacebookid %}
+          <div id="thd_desc_normal" class="span11" style="border: 1px solid #ccc;">
+              <pre>{{threads.thdDesc|raw|nl2br}}</pre>
+              <button class="btn-default btn-lg" id="btn_edit_desc" onclick="showEditingDiv('thd_desc', 'thd_desc_normal')">Edit</button>
+          </div>
+          <div id="thd_desc" class="span11" style="border: 1px solid #ccc;display: none">
+              <form id="form_desc" method="POST" action="">
+                <textarea class="tinymce" id="textarea_desc" name="textarea_desc">{{threads.thdDesc|raw|nl2br}}</textarea>
+                  <button class="btn-default btn-lg" id="btn_cancel_desc" onclick="showEditingDiv('thd_desc_normal', 'thd_desc')">Cancel</button>
+                <input type="submit" id="button_desc" name="button_desc" value="Submit"/>
+              </form>
+          </div>
+      {% else %}
+          <div id="thd_desc" class="span11" style="border: 1px solid #ccc;">
+              <pre>{{threads.thdDesc|raw|nl2br}}</pre>
+          </div>
+      {% endif %}
     </div>
      
     {% import _self as macros %}
@@ -117,6 +132,29 @@
           document.getElementById("reply_"+id).innerHTML="Quote";
           div.className="hidden";
         }
+      }
+
+      function changeToInput(id){
+          p = document.getElementById(id);
+          p.style.display="none";
+
+          p.parentElement.innerHTML='<form id="form_'+id+'" action="" method="POST">' +
+                  '<input id="input_'+id+'" value="'+ p.innerHTML+'" class="form-control" maxlength="140" ' +
+                  'type="text" required="required" name="input_'+id+'" style="width:90%;" ' +
+                  'onblur="submitForm(\'form_'+id+'\');"></input></form>';
+      }
+
+      function submitForm(id){
+          form = document.getElementById(id);
+          form.submit();
+      }
+
+      function showEditingDiv(id, hideDivId){
+          p = document.getElementById(id);
+          p.style.display="block";
+
+          p = document.getElementById(hideDivId);
+          p.style.display="none";
       }
   </script>
 {% endblock %}
