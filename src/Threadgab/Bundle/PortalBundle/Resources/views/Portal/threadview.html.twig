@@ -94,14 +94,16 @@
 
 
                     {% if reply.getReplyUser.getSignature != null %}
-                        <div id="div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal" onclick="showEditingDiv('div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}', 'div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal')">{{reply.getReplyUser.getSignature|raw|nl2br}}</div>
-                        <div id="div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" style="display: none">
-                            <form id="form_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" method="POST" action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum})}}?uid={{ reply.getReplyUser.getId }}&rid={{ reply.id }}" {{ form_enctype(form) }}>
-                                <textarea class="tinymce" id="ta_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" name="ta_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}">{{reply.getReplyUser.getSignature|raw|nl2br}}</textarea>
-                                <button class="btn-default btn-lg" id="btn_cancel_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" onclick="showEditingDiv('div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal', 'div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}')">Cancel</button>
-                                <input type="submit" id="button_{{ reply.id }}_{{ reply.getReplyUser.getId }}" name="button_{{ reply.id }}_{{ reply.getReplyUser.getId }}" value="Submit"/>
-                            </form>
-                        </div>
+                        <div id="div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal" {% if user_profile.id==reply.getReplyUser.getFacebookid %}onclick="showEditingDiv('div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}', 'div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal')"{% endif %}>{{reply.getReplyUser.getSignature|raw|nl2br}}</div>
+                        {% if user_profile.id==reply.getReplyUser.getFacebookid %}
+                            <div id="div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" style="display: none">
+                                <form id="form_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" method="POST" action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum})}}?uid={{ reply.getReplyUser.getId }}&rid={{ reply.id }}" {{ form_enctype(form) }}>
+                                    <textarea class="tinymce" id="ta_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" name="ta_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}">{{reply.getReplyUser.getSignature|raw|nl2br}}</textarea>
+                                    <button class="btn-default btn-lg" id="btn_cancel_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" onclick="showEditingDiv('div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal', 'div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}')">Cancel</button>
+                                    <input type="submit" id="button_{{ reply.id }}_{{ reply.getReplyUser.getId }}" name="button_{{ reply.id }}_{{ reply.getReplyUser.getId }}" value="Submit"/>
+                                </form>
+                            </div>
+                        {% endif %}
                     {% endif %}
 
                     <div id="div_{{reply.id}}" class="hidden" align="center">
