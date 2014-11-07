@@ -88,7 +88,7 @@ class LoginController extends Controller
     	if($session) {
 
     		 $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
-    		 $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
+    		 $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 100, 100)->asArray();
 
     		//Check in database if the user with this FacebookId already
     		//exists, other wise create a new user
