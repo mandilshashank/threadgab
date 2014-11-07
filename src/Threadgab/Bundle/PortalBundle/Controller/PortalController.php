@@ -335,6 +335,27 @@ class PortalController extends Controller
                 $em->flush();
             }
 
+            if(isset($_POST) and isset($_GET['rid']) and isset($_GET['uid'])) {
+                $reply_id = $_GET['rid'];
+                $user_id = $_GET['uid'];
+
+                if(isset($_POST['button_'.$reply_id.'_'.$user_id])) {
+
+                    $query_users = $em->createQuery(
+                        "SELECT u
+                        FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
+                        WHERE u.id=" . $user_id
+                    );
+
+                    $user_sig_change = $query_users->getResult();
+                    if ($user_sig_change[0] != null) {
+                        $user_sig_change[0]->setSignature($_POST['ta_sig_' . $reply_id . '_' . $user_id]);
+                        $em->persist($user_sig_change[0]);
+                        $em->flush();
+                    }
+                }
+            }
+
             //if($thread==null or $users==null or $thread[0]->getThdCreator()!=$users[0]) {
             //    $url = $this->generateUrl('portal_homepage', array('currentforum' => $currentforum));
             //    return $this->redirect($url);   
@@ -363,7 +384,7 @@ class PortalController extends Controller
                     ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
                     ->getForm();
 
-            if ($request->isMethod('POST')) {
+            if ($request->isMethod('POST') and isset($_GET['mainid'])) {
                 $form->submit($request->request->get($form->getName()));
                 
                 if ($form->isValid()) {
