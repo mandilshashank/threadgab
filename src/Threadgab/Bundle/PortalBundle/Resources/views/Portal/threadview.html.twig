@@ -33,7 +33,7 @@
           <p>{{currentforum}}</p>
       </div>
 
-      <div class="table-responsive span10" style="border: 1px solid #ccc;">
+      <div class="table-responsive span9" style="border: 1px solid #ccc;">
           {#The change should be possible only if current user is the user who generated this thread#}
           <p id="thd_title" {% if user_profile.id==threads.getThdCreator.getFacebookid %}onclick="changeToInput('thd_title');"{% endif %}>{{threads.thdSubject|nl2br}}</p>
       </div>
