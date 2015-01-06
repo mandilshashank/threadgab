@@ -47,6 +47,7 @@
       <div class="span2 text-center" style="border: 1px solid #ccc;">
           <a href="{{path('portal_profile_user',{'userid':threads.getThdCreator.getId})}}"><img src="{{threads.getThdCreator.getPhotoUrl}}"/></a>
           <p>{{ threads.getThdCreator.getName }}</p>
+          <p># Subscribers : {{threads.getThdCreator.numSub}}</p>
       </div>
 
       {% if user_profile.id==threads.getThdCreator.getFacebookid %}
