@@ -35,7 +35,9 @@
 
       <div class="span10" style="border: 1px solid #ccc;">
           {#The change should be possible only if current user is the user who generated this thread#}
-          <p id="thd_title" {% if user_profile.id==threads.getThdCreator.getFacebookid %}onclick="changeToInput('thd_title');"{% endif %}>{{threads.thdSubject|nl2br}}</p>
+          <p id="thd_title" {% if user_profile.id==threads.getThdCreator.getFacebookid %}onclick="changeToInput('thd_title');"{% endif %}>
+              {{threads.thdSubject|nl2br}}
+          </p>
       </div>
     </div>
   </div> 
@@ -60,7 +62,7 @@
               </form>
           </div>
       {% else %}
-          <div id="thd_desc" class="span11" style="border: 1px solid #ccc;">
+          <div id="thd_desc" class="span10" style="border: 1px solid #ccc;">
               <pre>{{threads.thdDesc|raw|nl2br}}</pre>
           </div>
       {% endif %}
