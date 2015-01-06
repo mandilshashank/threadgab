@@ -15,7 +15,9 @@
                     {% endif %}
 
                     {# TODO:Change the someone to the user's name #}
-                    <a href="{{path('portal_profile_user',{'userid':parentreply.replyUser.getId})}}">Someone</a> said :
+                    <a href="{{path('portal_profile_user',{'userid':parentreply.replyUser.getId})}}">
+                        {% if parentreply.replyUser.getName is not empty %}{{ parentreply.replyUser.getName }}{% else %}Someone{% endif %}
+                    </a> said :
                     <br/>{{parentreply.readData|raw}}
                     </center>
                 </div>
@@ -42,6 +44,7 @@
     <div class="row-fluid">
       <div class="span1 text-center" style="border: 1px solid #ccc;">
           <a href="{{path('portal_profile_user',{'userid':threads.getThdCreator.getId})}}"><img src="{{threads.getThdCreator.getPhotoUrl}}"/></a>
+          <p>{{ threads.getThdCreator.getName }}</p>
       </div>
 
       {% if user_profile.id==threads.getThdCreator.getFacebookid %}
@@ -70,6 +73,7 @@
             <div class="row-fluid" style="margin-top:20px">
                 <div class="span2 text-center" style="border: 1px solid #ccc;">
                 <a href="{{path('portal_profile_user',{'userid':reply.replyUser.getId})}}"><img src="{{reply.replyUser.photoUrl}}"/></a>
+                <p>{{reply.replyUser.getName}}</p>
                 <p># Subscribers : {{reply.replyUser.numSub}}</p>
                 </div>
 

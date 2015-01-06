@@ -108,6 +108,7 @@ class LoginController extends Controller
 	    		//This is the facebook Id. This Id will be used for matching the user to
 	    		// the Threadgab Id when the user logs in through facebook.	
 		        $user->setFacebookId($user_profile->getId());
+                $user->setName($user_profile->getName());
 		        $user->setCreationDate(date_create(date("Y-m-d H:i:s", time())));
 		        $user->setPhotoUrl($user_profile_photo["url"]);
 		        $user->setNumSub('0');
@@ -145,6 +146,7 @@ class LoginController extends Controller
 		        ));
 			} else {
 				$users[0]->setPhotoUrl($user_profile_photo["url"]);
+                $users[0]->setName($user_profile->getName());
 				$em = $this->getDoctrine()->getManager();
 			    $em->persist($users[0]);
 			    $em->flush();

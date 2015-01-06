@@ -56,4 +56,10 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser:
             comment: ''
             default: '0'
             column: num_sub
+        name:
+            type: string
+            nullable: true
+            length: 100
+            fixed: false
+            comment: ''
     lifecycleCallbacks: {  }
