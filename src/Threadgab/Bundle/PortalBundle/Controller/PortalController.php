@@ -326,10 +326,6 @@ class PortalController extends Controller
 
             //Get the users subscribed by the current user
             $subscribed_users = PortalBundle::getSubscribedUsers($users[0]->getId(), $em);
-            foreach($subscribed_users as $s){
-                var_dump($users[0]->getId());
-                var_dump($s->getId());
-            }
 
             if(isset($_POST['input_thd_title']) and $_POST['input_thd_title']!=""){
                 $thread[0]->setThdSubject($_POST['input_thd_title']);
