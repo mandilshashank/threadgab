@@ -3,6 +3,7 @@
 namespace Threadgab\Bundle\PortalBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubscriptions;
 use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser;
 use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply;
 use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread;
@@ -293,11 +294,8 @@ class PortalController extends Controller
         }
     }
 
-
     public function threadviewAction(Request $request,$threadid,$currentforum)
     {
-        //Write code for the subscribed to be shown here
-
         //Get the user data using the fb_token session variable
 
         $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
@@ -305,6 +303,8 @@ class PortalController extends Controller
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
             $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
+
+            //var_dump($user_profile);
 
             //Get the current user
             $repository = $this->getDoctrine()->getRepository('ThreadgabDatabaseBundle:ThreadgabUser');
@@ -314,6 +314,7 @@ class PortalController extends Controller
                             ->getQuery();
             $users = $query->getResult();
 
+            //Get the thread entity for the passed threadid
             $em = $this->getDoctrine()->getManager();
             $query_thread = $em->createQuery(
                 "SELECT t
@@ -322,6 +323,13 @@ class PortalController extends Controller
             );
 
             $thread  = $query_thread->getResult();
+
+            //Get the users subscribed by the current user
+            $subscribed_users = PortalBundle::getSubscribedUsers($users[0]->getId(), $em);
+            foreach($subscribed_users as $s){
+                var_dump($users[0]->getId());
+                var_dump($s->getId());
+            }
 
             if(isset($_POST['input_thd_title']) and $_POST['input_thd_title']!=""){
                 $thread[0]->setThdSubject($_POST['input_thd_title']);
@@ -356,11 +364,6 @@ class PortalController extends Controller
                 }
             }
 
-            //if($thread==null or $users==null or $thread[0]->getThdCreator()!=$users[0]) {
-            //    $url = $this->generateUrl('portal_homepage', array('currentforum' => $currentforum));
-            //    return $this->redirect($url);   
-            //}
-
             $query_replies = $em->createQuery(
                 "SELECT t
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply t
@@ -384,6 +387,53 @@ class PortalController extends Controller
                     ->add('save', 'submit', array('label' => 'Save', 'attr' => array('class' => 'form-control')))
                     ->getForm();
 
+            //Check if the subscribe button is pressed and do necesssary action
+            if(isset($_POST['button_subscribe']) and $_POST['button_subscribe']=='Subscribe') {
+                $query_new_subscribee_user = $em->createQuery(
+                    "SELECT u
+                    FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
+                    WHERE u.id=".$_POST['subscribee']
+                );
+                $new_subscribee_user=$query_new_subscribee_user->getResult();
+
+                $new_subscription = new ThreadgabSubscriptions();
+                $new_subscription->setSubscriber($users[0]);
+                $new_subscription->setSubscribee($new_subscribee_user[0]);
+
+                $em->persist($new_subscription);
+                $em->flush();
+
+                $subscribed_users = PortalBundle::getSubscribedUsers($users[0]->getId(), $em);
+
+                //Return back to the same thread page
+                return $this->render('PortalBundle:Portal:threadview.html.twig',
+                    array('threads' => $thread[0],'currentforum' => $currentforum,
+                        'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
+                        'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users));
+            }
+
+            //Check if the unsubscribed button is pressed and do necesssary action
+            if(isset($_POST['button_unsubscribe']) and $_POST['button_unsubscribe']=='Unsubscribe') {
+                $query_delete_subscription = $em->createQuery(
+                    "SELECT s
+                    FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubscriptions s
+                    WHERE s.subscribee=".$_POST['subscribee'].
+                    "and  s.subscriber=".$users[0]->getId()
+                );
+                $delete_subscription=$query_delete_subscription->getResult();
+
+                $em->remove($delete_subscription[0]);
+                $em->flush();
+
+                $subscribed_users = PortalBundle::getSubscribedUsers($users[0]->getId(), $em);
+
+                //Return back to the same thread page
+                return $this->render('PortalBundle:Portal:threadview.html.twig',
+                    array('threads' => $thread[0],'currentforum' => $currentforum,
+                        'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
+                        'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users));
+            }
+
             if ($request->isMethod('POST') and isset($_GET['mainid'])) {
                 $form->submit($request->request->get($form->getName()));
                 
@@ -395,7 +445,8 @@ class PortalController extends Controller
 
                     //Return back to the same thread page
                     $url = $this->generateUrl('portal_thread', 
-                        array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile));
+                        array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile
+                        , 'subscribed_to'=> $subscribed_users));
                     return $this->redirect($url."?id=0");
                 }   
             }
@@ -415,7 +466,8 @@ class PortalController extends Controller
                 $em->flush();
 
                 $url = $this->generateUrl('portal_thread', 
-                        array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile));
+                        array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile
+                        , 'subscribed_to'=> $subscribed_users));
                 return $this->redirect($url."?id=0");
                 }
             }
@@ -427,7 +479,7 @@ class PortalController extends Controller
             return $this->render('PortalBundle:Portal:threadview.html.twig', 
                 array('threads' => $thread[0],'currentforum' => $currentforum,
                     'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
-                    'form' => $form->createView(), 'user_profile'=>$user_profile));
+                    'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

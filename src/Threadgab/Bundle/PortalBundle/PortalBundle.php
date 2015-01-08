@@ -11,6 +11,24 @@ use Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabPollAnswers;
 
 class PortalBundle extends Bundle
 {
+    public static function getSubscribedUsers($userid, $em){
+        //Get the users subscribed by the current user
+        $query_subscribed = $em->createQuery(
+            "SELECT s
+            FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubscriptions s
+            INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
+            WITH s.subscriber = u.id
+            WHERE u.id = " . $userid
+        );
+        $subscribed_users = array();
+        $subscribed_subscriptions=$query_subscribed->getResult();
+        foreach ($subscribed_subscriptions as $subscription){
+            array_push($subscribed_users, $subscription->getSubscribee());
+        }
+
+        return $subscribed_users;
+    }
+
 	public static function createAndPersistThread($subforums, $thread_reach, $em, $selectedForum, $user,
 		$thd_subject, $thd_desc, $thd_is_poll, $thd_label)
     {

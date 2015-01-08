@@ -40,16 +40,41 @@
           </p>
       </div>
     </div>
-  </div> 
+  </div>
 
 	<div class="container-fluid">
     <div class="row-fluid">
+
+      {#Display the photo and id of the person posting the thread#}
       <div class="span2 text-center" style="border: 1px solid #ccc;">
           <a href="{{path('portal_profile_user',{'userid':threads.getThdCreator.getId})}}"><img src="{{threads.getThdCreator.getPhotoUrl}}"/></a>
           <p>{{ threads.getThdCreator.getName }}</p>
+
+          {#Check if the current user is already subscribed to the user posting the thread and show subscription button
+           if not subscribed unless its the same user who posted the thread#}
+
+          {% set found=0 %}
+          {% for key,subscriber in subscribed_to if found==0 %}
+              {% if threads.getThdCreator.getId == subscriber.getId %}
+                  {#User is subscribed to this user#}
+                  <form id="form_unsubscribe" method="POST" action="">
+                      <input type="hidden" value="{{ threads.getThdCreator.getId }}" name="subscribee"/>
+                      <input type="submit" id="button_unsubscribe" name="button_unsubscribe" value="Unsubscribe"/>
+                  </form>
+                  {% set found=1 %}
+              {% endif %}
+          {% endfor %}
+          {% if found==0 and user_profile.id!=threads.getThdCreator.getFacebookid %}
+              {#User is not subscribed to this user. Show subscription button#}
+              <form id="form_subscribe" method="POST" action="">
+                  <input type="hidden" value="{{ threads.getThdCreator.getId }}" name="subscribee"/>
+                  <input type="submit" id="button_subscribe" name="button_subscribe" value="Subscribe"/>
+              </form>
+          {% endif %}
           <p># Subscribers : {{threads.getThdCreator.numSub}}</p>
       </div>
 
+      {#Display the Thread description#}
       {% if user_profile.id==threads.getThdCreator.getFacebookid %}
           <div id="thd_desc_normal" class="span10" style="border: 1px solid #ccc;">
               <pre>{{threads.thdDesc|raw|nl2br}}</pre>
@@ -74,12 +99,37 @@
     {% if replies|length > 0 %}
         {% for reply in replies %}
             <div class="row-fluid" style="margin-top:20px">
+                {#Display the photo and name of the person posting the reply#}
                 <div class="span2 text-center" style="border: 1px solid #ccc;">
                 <a href="{{path('portal_profile_user',{'userid':reply.replyUser.getId})}}"><img src="{{reply.replyUser.photoUrl}}"/></a>
                 <p>{{reply.replyUser.getName}}</p>
+
+
+                {#Enable subscription for a reply#}
+                {% set found=0 %}
+                {% for key,subscriber in subscribed_to if found==0 %}
+                    {% if reply.replyUser.getId == subscriber.getId %}
+                        {#User is subscribed to this user#}
+                        <form id="form_unsubscribe" method="POST" action="">
+                            <input type="hidden" value="{{ reply.replyUser.getId }}" name="subscribee"/>
+                            <input type="submit" id="button_unsubscribe" name="button_unsubscribe" value="Unsubscribe"/>
+                        </form>
+                        {% set found=1 %}
+                    {% endif %}
+                {% endfor %}
+                {% if found==0 and user_profile.id!=reply.replyUser.getFacebookid %}
+                    {#User is not subscribed to this user. Show subscription button#}
+                    <form id="form_subscribe" method="POST" action="">
+                        <input type="hidden" value="{{ reply.replyUser.getId }}" name="subscribee"/>
+                        <input type="submit" id="button_subscribe" name="button_subscribe" value="Subscribe"/>
+                    </form>
+                {% endif %}
+                {#End Enable subscription for a reply#}
+
                 <p># Subscribers : {{reply.replyUser.numSub}}</p>
                 </div>
 
+                {#Display the posted reply chain#}
                 <div class="table-responsive span10" style="border: 1px solid #ccc;">
                     <div class="row-fluid">
                         <div class="span11">
@@ -98,7 +148,6 @@
                     </div>
 
                     <hr/>
-
 
                     {% if reply.getReplyUser.getSignature != null %}
                         <div id="div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal" {% if user_profile.id==reply.getReplyUser.getFacebookid %}onclick="showEditingDiv('div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}', 'div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal')"{% endif %}>{{reply.getReplyUser.getSignature|raw|nl2br}}</div>
