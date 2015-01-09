@@ -110,8 +110,8 @@
 
 
                 {#Enable subscription for a reply#}
-                {% if threads.getThdCreator.getFacebookid in friend_facebook_ids %}
-                Friend
+                {% if reply.replyUser.getFacebookid in friend_facebook_ids %}
+                    Friend
                 {% else %}
                     {% set found=0 %}
                     {% for key,subscriber in subscribed_to if found==0 %}
