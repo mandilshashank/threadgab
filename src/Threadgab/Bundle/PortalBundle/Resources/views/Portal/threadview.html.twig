@@ -52,24 +52,28 @@
 
           {#Check if the current user is already subscribed to the user posting the thread and show subscription button
            if not subscribed unless its the same user who posted the thread#}
+          {% if threads.getThdCreator.getFacebookid in friend_facebook_ids %}
+              Friend
+          {% else %}
+              {% set found=0 %}
+              {% for key,subscriber in subscribed_to if found==0 %}
+                  {% if threads.getThdCreator.getId == subscriber.getId %}
+                      {#User is subscribed to this user#}
+                      <form id="form_unsubscribe" method="POST" action="">
+                          <input type="hidden" value="{{ threads.getThdCreator.getId }}" name="subscribee"/>
+                          <input type="submit" id="button_unsubscribe" name="button_unsubscribe" value="Unsubscribe"/>
+                      </form>
+                      {% set found=1 %}
+                  {% endif %}
+              {% endfor %}
 
-          {% set found=0 %}
-          {% for key,subscriber in subscribed_to if found==0 %}
-              {% if threads.getThdCreator.getId == subscriber.getId %}
-                  {#User is subscribed to this user#}
-                  <form id="form_unsubscribe" method="POST" action="">
+              {% if found==0 and user_profile.id!=threads.getThdCreator.getFacebookid %}
+                  {#User is not subscribed to this user. Show subscription button#}
+                  <form id="form_subscribe" method="POST" action="">
                       <input type="hidden" value="{{ threads.getThdCreator.getId }}" name="subscribee"/>
-                      <input type="submit" id="button_unsubscribe" name="button_unsubscribe" value="Unsubscribe"/>
+                      <input type="submit" id="button_subscribe" name="button_subscribe" value="Subscribe"/>
                   </form>
-                  {% set found=1 %}
               {% endif %}
-          {% endfor %}
-          {% if found==0 and user_profile.id!=threads.getThdCreator.getFacebookid %}
-              {#User is not subscribed to this user. Show subscription button#}
-              <form id="form_subscribe" method="POST" action="">
-                  <input type="hidden" value="{{ threads.getThdCreator.getId }}" name="subscribee"/>
-                  <input type="submit" id="button_subscribe" name="button_subscribe" value="Subscribe"/>
-              </form>
           {% endif %}
           <p># Subscribers : {{threads.getThdCreator.numSub}}</p>
       </div>
@@ -106,23 +110,27 @@
 
 
                 {#Enable subscription for a reply#}
-                {% set found=0 %}
-                {% for key,subscriber in subscribed_to if found==0 %}
-                    {% if reply.replyUser.getId == subscriber.getId %}
-                        {#User is subscribed to this user#}
-                        <form id="form_unsubscribe" method="POST" action="">
+                {% if threads.getThdCreator.getFacebookid in friend_facebook_ids %}
+                Friend
+                {% else %}
+                    {% set found=0 %}
+                    {% for key,subscriber in subscribed_to if found==0 %}
+                        {% if reply.replyUser.getId == subscriber.getId %}
+                            {#User is subscribed to this user#}
+                            <form id="form_unsubscribe" method="POST" action="">
+                                <input type="hidden" value="{{ reply.replyUser.getId }}" name="subscribee"/>
+                                <input type="submit" id="button_unsubscribe" name="button_unsubscribe" value="Unsubscribe"/>
+                            </form>
+                            {% set found=1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if found==0 and user_profile.id!=reply.replyUser.getFacebookid %}
+                        {#User is not subscribed to this user. Show subscription button#}
+                        <form id="form_subscribe" method="POST" action="">
                             <input type="hidden" value="{{ reply.replyUser.getId }}" name="subscribee"/>
-                            <input type="submit" id="button_unsubscribe" name="button_unsubscribe" value="Unsubscribe"/>
+                            <input type="submit" id="button_subscribe" name="button_subscribe" value="Subscribe"/>
                         </form>
-                        {% set found=1 %}
                     {% endif %}
-                {% endfor %}
-                {% if found==0 and user_profile.id!=reply.replyUser.getFacebookid %}
-                    {#User is not subscribed to this user. Show subscription button#}
-                    <form id="form_subscribe" method="POST" action="">
-                        <input type="hidden" value="{{ reply.replyUser.getId }}" name="subscribee"/>
-                        <input type="submit" id="button_subscribe" name="button_subscribe" value="Subscribe"/>
-                    </form>
                 {% endif %}
                 {#End Enable subscription for a reply#}
 

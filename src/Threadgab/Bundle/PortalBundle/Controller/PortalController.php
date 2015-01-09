@@ -303,6 +303,14 @@ class PortalController extends Controller
 
             $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
             $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 50, 50)->asArray();
+            $user_friends = ThreadgabLoginBundle::getFacebookFriends($session)
+                ->getProperty('data')->asArray();
+            $friend_facebook_ids = array();
+
+            //Get the facebookid entry for each friend matching to the friend id
+            foreach ($user_friends as $friend){
+                array_push($friend_facebook_ids, $friend->id);
+            }
 
             //var_dump($user_profile);
 
@@ -405,7 +413,8 @@ class PortalController extends Controller
                 return $this->render('PortalBundle:Portal:threadview.html.twig',
                     array('threads' => $thread[0],'currentforum' => $currentforum,
                         'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
-                        'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users));
+                        'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users,
+                        'friend_facebook_ids'=>$friend_facebook_ids));
             }
 
             //Check if the unsubscribed button is pressed and do necesssary action
@@ -427,7 +436,8 @@ class PortalController extends Controller
                 return $this->render('PortalBundle:Portal:threadview.html.twig',
                     array('threads' => $thread[0],'currentforum' => $currentforum,
                         'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
-                        'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users));
+                        'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users,
+                        'friend_facebook_ids'=>$friend_facebook_ids));
             }
 
             if ($request->isMethod('POST') and isset($_GET['mainid'])) {
@@ -442,7 +452,7 @@ class PortalController extends Controller
                     //Return back to the same thread page
                     $url = $this->generateUrl('portal_thread', 
                         array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile
-                        , 'subscribed_to'=> $subscribed_users));
+                        , 'subscribed_to'=> $subscribed_users, 'friend_facebook_ids'=>$friend_facebook_ids));
                     return $this->redirect($url."?id=0");
                 }   
             }
@@ -463,7 +473,7 @@ class PortalController extends Controller
 
                 $url = $this->generateUrl('portal_thread', 
                         array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile
-                        , 'subscribed_to'=> $subscribed_users));
+                        , 'subscribed_to'=> $subscribed_users, 'friend_facebook_ids'=>$friend_facebook_ids));
                 return $this->redirect($url."?id=0");
                 }
             }
@@ -475,7 +485,8 @@ class PortalController extends Controller
             return $this->render('PortalBundle:Portal:threadview.html.twig', 
                 array('threads' => $thread[0],'currentforum' => $currentforum,
                     'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
-                    'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users));
+                    'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users,
+                    'friend_facebook_ids'=>$friend_facebook_ids));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

@@ -127,6 +127,37 @@ class LoginController extends Controller
 				    $em->persist($user);
 				    $em->flush();
 
+                    //Add the user as subscriber to all his friends present in the system
+
+                    $user_friends = ThreadgabLoginBundle::getFacebookFriends($session)
+                        ->getProperty('data')->asArray();
+                    $facebook_ids = array();
+
+                        //Get the facebookid entry for each friend matching to the friend id
+                    foreach ($user_friends as $friend){
+                        array_push($facebook_ids, $friend->id);
+                    }
+
+                    $em = $this->getDoctrine()->getManager();
+
+                        //Get the friend thread for a specific user friends and a specific subforum
+                    $query = $em->createQuery(
+                        "SELECT u
+                        FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
+                        WHERE u.facebookid in (".implode(',', $facebook_ids).")
+                    ");
+
+                    $friends = $query->getResult();
+
+                        //Add 1 to the number to the number of subscribers for the friends of the user
+                    foreach($friends as $friend){
+                        $friend->setNumSub($friend->getNumSub()+1);
+                        $em->persist($friend);
+                        $em->flush();
+                    }
+
+                    //End Add the user as subscriber to all his friends present in the system
+
 				    $query_subforum = $em->createQuery(
 		                "SELECT t
 		                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
