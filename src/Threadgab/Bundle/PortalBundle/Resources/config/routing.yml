@@ -27,6 +27,6 @@ portal_thread_create:
     defaults: { _controller: PortalBundle:Portal:threadcreate }
 
 portal_thread:
-    path:     /portal/thread/{threadid}/{currentforum}
+    path:     /portal/thread/{threadid}/{currentforum}/{frompage}
     defaults: { _controller: PortalBundle:Portal:threadview }
 

@@ -294,7 +294,7 @@ class PortalController extends Controller
         }
     }
 
-    public function threadviewAction(Request $request,$threadid,$currentforum)
+    public function threadviewAction(Request $request,$threadid,$currentforum,$frompage)
     {
         //Get the user data using the fb_token session variable
 
@@ -334,6 +334,17 @@ class PortalController extends Controller
 
             //Get the users subscribed by the current user
             $subscribed_users = PortalBundle::getSubscribedUsers($users[0]->getId(), $em);
+
+            //Delete the current thread if you receive confirmation from the thread owner to do it
+            //Redirect to the page from where the user came to this threadview page
+            if(isset($_POST['button_delete_thread'])){
+                $em->remove($thread[0]);
+                $em->flush();
+
+                //Redirect
+                $url = $this->generateUrl('portal_'.$frompage,array('currentforum'=>$currentforum));
+                return $this->redirect($url);
+            }
 
             if(isset($_POST['input_thd_title']) and $_POST['input_thd_title']!=""){
                 $thread[0]->setThdSubject($_POST['input_thd_title']);
@@ -414,7 +425,7 @@ class PortalController extends Controller
                     array('threads' => $thread[0],'currentforum' => $currentforum,
                         'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
                         'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users,
-                        'friend_facebook_ids'=>$friend_facebook_ids));
+                        'friend_facebook_ids'=>$friend_facebook_ids, 'frompage'=>$frompage));
             }
 
             //Check if the unsubscribed button is pressed and do necesssary action
@@ -437,7 +448,7 @@ class PortalController extends Controller
                     array('threads' => $thread[0],'currentforum' => $currentforum,
                         'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
                         'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users,
-                        'friend_facebook_ids'=>$friend_facebook_ids));
+                        'friend_facebook_ids'=>$friend_facebook_ids, 'frompage'=>$frompage));
             }
 
             if ($request->isMethod('POST') and isset($_GET['mainid'])) {
@@ -452,7 +463,7 @@ class PortalController extends Controller
                     //Return back to the same thread page
                     $url = $this->generateUrl('portal_thread', 
                         array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile
-                        , 'subscribed_to'=> $subscribed_users, 'friend_facebook_ids'=>$friend_facebook_ids));
+                        , 'subscribed_to'=> $subscribed_users, 'friend_facebook_ids'=>$friend_facebook_ids, 'frompage'=>$frompage));
                     return $this->redirect($url."?id=0");
                 }   
             }
@@ -473,7 +484,7 @@ class PortalController extends Controller
 
                 $url = $this->generateUrl('portal_thread', 
                         array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile
-                        , 'subscribed_to'=> $subscribed_users, 'friend_facebook_ids'=>$friend_facebook_ids));
+                        , 'subscribed_to'=> $subscribed_users, 'friend_facebook_ids'=>$friend_facebook_ids, 'frompage'=>$frompage));
                 return $this->redirect($url."?id=0");
                 }
             }
@@ -486,7 +497,7 @@ class PortalController extends Controller
                 array('threads' => $thread[0],'currentforum' => $currentforum,
                     'user_profile_photo' => $user_profile_photo, 'replies' => $replies,
                     'form' => $form->createView(), 'user_profile'=>$user_profile, 'subscribed_to'=> $subscribed_users,
-                    'friend_facebook_ids'=>$friend_facebook_ids));
+                    'friend_facebook_ids'=>$friend_facebook_ids, 'frompage'=>$frompage));
         } else {
             //Session not found. Take to a common error page
             return new Response("Session not found at the subscribed portal Page.");

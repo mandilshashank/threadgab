@@ -58,7 +58,7 @@
                       {% for thread in threads %}
                       <tr>
                           <td>{% if thread.thdLabel!='None' %} {{thread.thdLabel}} {% endif %}</td>
-                          <td><a href="{{path('portal_thread',{'threadid':thread.id,'currentforum':currentforum})}}?id=0">{{thread.thdSubject}}</a></td>
+                          <td><a href="{{path('portal_thread',{'threadid':thread.id,'currentforum':currentforum,'frompage':'subscribed'})}}?id=0">{{thread.thdSubject}}</a></td>
                           <td>{{thread.createdAt|date('Y-m-d')}}</td>
                           <td>{{thread.numReply}}</td>
                           <td>{{thread.updatedAt|date('Y-m-d')}}</td>

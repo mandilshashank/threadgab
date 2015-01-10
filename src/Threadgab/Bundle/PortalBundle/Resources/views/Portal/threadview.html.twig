@@ -27,20 +27,34 @@
 {% endmacro %}
 
 {% block body %}
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="span2" style="border: 1px solid #ccc;">
-          <p>{{currentforum}}</p>
-      </div>
-
-      <div class="span10" style="border: 1px solid #ccc;">
-          {#The change should be possible only if current user is the user who generated this thread#}
-          <p id="thd_title" {% if user_profile.id==threads.getThdCreator.getFacebookid %}onclick="changeToInput('thd_title');"{% endif %}>
-              {{threads.thdSubject|nl2br}}
-          </p>
-      </div>
+    <!--Add thread delete button is the current user is the originator of the thread-->
+    {% if user_profile.id == threads.getThdCreator.getFacebookid %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span2" style="float: right">
+                <form id="form_delete" method="POST" action="">
+                    <input type="hidden" value="{{ threads.getId }}" name="threadid"/>
+                    <input type="submit" id="button_delete_thread" name="button_delete_thread" value="Delete Thread"/>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
+    {% endif %}
+
+    <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span2" style="border: 1px solid #ccc;">
+              <p>{{currentforum}}</p>
+          </div>
+
+          <div class="span10" style="border: 1px solid #ccc;">
+              {#The change should be possible only if current user is the user who generated this thread#}
+              <p id="thd_title" {% if user_profile.id==threads.getThdCreator.getFacebookid %}onclick="changeToInput('thd_title');"{% endif %}>
+                  {{threads.thdSubject|nl2br}}
+              </p>
+          </div>
+        </div>
+    </div>
 
 	<div class="container-fluid">
     <div class="row-fluid">
@@ -161,7 +175,7 @@
                         <div id="div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal" {% if user_profile.id==reply.getReplyUser.getFacebookid %}onclick="showEditingDiv('div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}', 'div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal')"{% endif %}>{{reply.getReplyUser.getSignature|raw|nl2br}}</div>
                         {% if user_profile.id==reply.getReplyUser.getFacebookid %}
                             <div id="div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" style="display: none">
-                                <form id="form_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" method="POST" action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum})}}?uid={{ reply.getReplyUser.getId }}&rid={{ reply.id }}" {{ form_enctype(form) }}>
+                                <form id="form_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" method="POST" action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?uid={{ reply.getReplyUser.getId }}&rid={{ reply.id }}" {{ form_enctype(form) }}>
                                     <textarea class="tinymce" id="ta_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" name="ta_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}">{{reply.getReplyUser.getSignature|raw|nl2br}}</textarea>
                                     <button class="btn-default btn-lg" id="btn_cancel_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}" onclick="showEditingDiv('div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}_normal', 'div_sig_{{ reply.id }}_{{ reply.getReplyUser.getId }}')">Cancel</button>
                                     <input type="submit" id="button_{{ reply.id }}_{{ reply.getReplyUser.getId }}" name="button_{{ reply.id }}_{{ reply.getReplyUser.getId }}" value="Submit"/>
@@ -172,7 +186,7 @@
 
                     <div id="div_{{reply.id}}" class="hidden" align="center">
                     <!--Reply form to reply to specific reply-->
-                        <form id="form_{{reply.id}}" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum})}}?id={{reply.id}}">
+                        <form id="form_{{reply.id}}" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?id={{reply.id}}">
                         <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
                         <input type="hidden" id="reply_to_{{reply.id}}" name="reply_to_{{reply.id}}" value="{{reply.id}}">
                         <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"/>
@@ -184,7 +198,7 @@
     {% endif %}  
   </div>
 
-  <form method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum})}}?mainid=real">
+  <form method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?mainid=real">
     {{form(form)}}
   </form>
 
