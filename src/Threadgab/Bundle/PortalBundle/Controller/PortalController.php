@@ -469,24 +469,52 @@ class PortalController extends Controller
             }
 
             if(isset($_POST) && isset($_GET['id'])){
-                $form_id=$_GET['id'];
-                if($form_id!=0) {
-                $dynamic_reply=new ThreadgabReply();
-                $dynamic_reply->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
-                $dynamic_reply->setThd($thread[0]);
-                $dynamic_reply->setReplyUser($users[0]);
-                $dynamic_reply->setReplyTo($_POST['reply_to_'.$form_id]);
-                $dynamic_reply->setReplyData($_POST['textarea_'.$form_id]);
+                //Check if the edit_reply post variable is present
+                //If not its a quoted reply request
+                if(isset($_POST['edit_reply'])){
+                    //Edit a reply
+                    $form_id=$_GET['id'];
+                    if($form_id!=0) {
+                        //Get the reply element first
+                        $query_reply_edit = $em->createQuery(
+                            "SELECT r
+                            FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply r
+                            WHERE r.id=".$form_id
+                        );
 
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($dynamic_reply);
-                $em->flush();
+                        $replies  = $query_reply_edit->getResult();
+                        //Check if the reply exists
+                        if(sizeof($replies)!=0)
+                        {
+                            $replies[0]->setReplyData($_POST['textarea_' . $form_id . '_edit']);
+                        }
 
-                $url = $this->generateUrl('portal_thread', 
+                        $em = $this->getDoctrine()->getManager();
+                        $em->persist($replies[0]);
+                        $em->flush();
+                    }
+                } else {
+                    //Create a new quoted reply
+                    $form_id=$_GET['id'];
+                    if($form_id!=0) {
+                        $dynamic_reply = new ThreadgabReply();
+                        $dynamic_reply->setCreatedAt(date_create(date("Y-m-d H:i:s", time())));
+                        $dynamic_reply->setThd($thread[0]);
+                        $dynamic_reply->setReplyUser($users[0]);
+                        $dynamic_reply->setReplyTo($_POST['reply_to_' . $form_id]);
+                        $dynamic_reply->setReplyData($_POST['textarea_' . $form_id]);
+
+                        $em = $this->getDoctrine()->getManager();
+                        $em->persist($dynamic_reply);
+                        $em->flush();
+                    }
+                }
+
+                $url = $this->generateUrl('portal_thread',
                         array('threadid'=>$threadid,'currentforum'=>$currentforum, 'user_profile'=>$user_profile
                         , 'subscribed_to'=> $subscribed_users, 'friend_facebook_ids'=>$friend_facebook_ids, 'frompage'=>$frompage));
                 return $this->redirect($url."?id=0");
-                }
+
             }
 
             //Get all the replies to this thread and also the replies to those replies

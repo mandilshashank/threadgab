@@ -164,9 +164,15 @@
                         </div>
 
                         <div class="span1">
-                        <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>
-                        </div>
+                            <!--Create the Quote button-->
+                            <button class="btn-default btn-lg" id="reply_{{reply.id}}" onclick="toggleDiv({{reply.id}})">Quote</button>
 
+                            <!--Create an Edit button and create a form to edit the reply only is
+                            one who has written the reply-->
+                            {% if user_profile.id == reply.replyUser.getFacebookid %}
+                                <button class="btn-default btn-lg" id="reply_{{reply.id}}_edit" onclick="toggleDiv('{{reply.id}}_edit')">Edit</button>
+                            {% endif %}
+                        </div>
                     </div>
 
                     <hr/>
@@ -192,6 +198,19 @@
                         <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"/>
                         </form>
                     </div>
+
+                    <!--Create this edit form only when the user is the same as who has written this reply-->
+                    {% if user_profile.id == reply.replyUser.getFacebookid %}
+                        <div id="div_{{reply.id}}_edit" class="hidden" align="center">
+                            <!--Reply form to reply to specific reply-->
+                            <form id="form_{{reply.id}}_edit" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?id={{reply.id}}">
+                                <textarea class="tinymce" id="textarea_{{reply.id}}_edit" name="textarea_{{reply.id}}_edit">{{reply.readData|raw}}</textarea>
+                                <input type="hidden" id="reply_to_{{reply.id}}_edit" name="reply_to_{{reply.id}}_edit" value="{{reply.id}}">
+                                <input type="hidden" id="edit_reply" name="edit_reply" value="edit_reply"/>
+                                <input type="submit" id="button_{{reply.id}}_edit" name="button_{{reply.id}}_edit" value="Submit"/>
+                            </form>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
@@ -214,10 +233,18 @@
       function toggleDiv(id){
         div = document.getElementById("div_"+id);
         if(div.className=="hidden"){
-          document.getElementById("reply_"+id).innerHTML="Unquote";
+            if(document.getElementById("reply_"+id).innerHTML=="Quote") {
+                document.getElementById("reply_" + id).innerHTML = "Unquote";
+            } else if(document.getElementById("reply_"+id).innerHTML=="Edit"){
+                document.getElementById("reply_" + id).innerHTML = "Unedit";
+            }
           div.className="show";
         } else {
-          document.getElementById("reply_"+id).innerHTML="Quote";
+            if(document.getElementById("reply_"+id).innerHTML=="Unquote") {
+                document.getElementById("reply_" + id).innerHTML = "Quote";
+            } else if(document.getElementById("reply_"+id).innerHTML=="Unedit"){
+                document.getElementById("reply_" + id).innerHTML = "Edit";
+            }
           div.className="hidden";
         }
       }
