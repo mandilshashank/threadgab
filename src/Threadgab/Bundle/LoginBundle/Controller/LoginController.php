@@ -128,6 +128,7 @@ class LoginController extends Controller
 				    $em->flush();
 
                     //Add the user as subscriber to all his friends present in the system
+                    //Also add the friends as subscribers to the user
 
                     $user_friends = ThreadgabLoginBundle::getFacebookFriends($session)
                         ->getProperty('data')->asArray();
@@ -151,8 +152,14 @@ class LoginController extends Controller
 
                         //Add 1 to the number to the number of subscribers for the friends of the user
                     foreach($friends as $friend){
+                        //Add the user to the subscriber number of the friend
                         $friend->setNumSub($friend->getNumSub()+1);
                         $em->persist($friend);
+                        $em->flush();
+
+                        // Add the friend to the subscriber number of the user
+                        $user->setNumSub($friend->getNumSub()+1);
+                        $em->persist($user);
                         $em->flush();
                     }
 
