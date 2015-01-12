@@ -77,7 +77,7 @@ class PortalController extends Controller
                 WITH t.thdCreator = u.id
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum v
                 WITH t.thdSubforum = v.id
-                WHERE u.facebookid in (".implode(',', $facebook_ids).")  
+                WHERE u.facebookid in (".implode(',', $facebook_ids).")
                     and (t.thdIsfriend='1')
                     and v.subForumName='".$currentforum."'
                 ORDER BY t.updatedAt desc"
@@ -101,6 +101,59 @@ class PortalController extends Controller
 			//Session not found. Take to a common error page
 			return new Response("Session not found at the Main portal Page.");
 		}      
+    }
+
+    public function frontpageAction($currentforum)
+    {
+        //Get the user data using the fb_token session variable
+
+        //Check if the fb_token session variable is available and then proceed is it is.
+        if(!isset($_SESSION['fb_token']))
+        {
+            //Session not found. Take to a common error page
+            return new Response("FB Token not found at the Main portal Page. Please relogin into Facebook at the main website page");
+        }
+
+        $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
+        if($session) {
+
+            $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
+
+            $em = $this->getDoctrine()->getManager();
+
+            //Get the friend thread for a specific user friends and a specific subforum
+            $query = $em->createQuery(
+                "SELECT t, count(t) as thread_count
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
+                WITH t.thdCreator = u.id
+                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum v
+                WITH t.thdSubforum = v.id
+                LEFT OUTER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply r
+                WITH r.thd = t.id
+                WHERE t.thdIsglobal='1'
+                GROUP BY t
+                order by thread_count desc, t.updatedAt desc"
+            );
+
+            $query_subforum = $em->createQuery(
+                "SELECT t
+                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum t
+                ORDER BY t.id"
+            );
+
+            $threads = $query->getResult();
+            $subforum  = $query_subforum->getResult();
+
+            //Render the friends thread for each of the friends and yourself
+            return $this->render('PortalBundle:Portal:frontpage.html.twig',
+                array('threads' => $threads, 'subforum' => $subforum,
+                    'currentforum' => $currentforum));
+
+        } else {
+            //Session not found. Take to a common error page
+            return new Response("Session not found at the Main portal Page.");
+        }
     }
 
     public function communityAction($currentforum)

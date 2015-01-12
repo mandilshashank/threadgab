@@ -200,8 +200,11 @@ class LoginController extends Controller
 	            $subforum  = $query_subforum->getResult();
 
 				//User already exists. Redirect to the main page of the forum.
-				$url = $this->generateUrl('portal_homepage', array('currentforum' => $subforum[0]->getSubForumName()));
-					return $this->redirect($url);	
+				//$url = $this->generateUrl('portal_homepage', array('currentforum' => $subforum[0]->getSubForumName()));
+				//	return $this->redirect($url);
+
+                $url = $this->generateUrl('portal_homepage', array('currentforum' => $subforum[0]->getSubForumName()));
+                return $this->redirect($url);
 			}
 
     	} else {

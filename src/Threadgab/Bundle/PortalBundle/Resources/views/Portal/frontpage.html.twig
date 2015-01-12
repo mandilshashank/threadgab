@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+{% block stylesheets %}
+	{{parent()}}
+{% endblock %}
+{% block body %}
+  	<div class="container-fluid">
+	  	<div class="row-fluid">
+	    	<div class="span2 pull-left">
+	   	 		<div id="sidebar-wrapper" >
+			        <ul class="sidebar-nav" id="sidebar">     
+			          {% for forum in subforum %}
+			          <li><a href="{{path('portal_homepage',{'currentforum':forum.subForumName})}}">{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+			          {% endfor %}
+			        </ul>
+			    </div>
+	    	</div>
+
+	    	<div class="span10 pull-right">
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <!--A container for the trending topics of the last hour-->
+                        <div class="span8 pull-left" style="border-style: solid; border-width: 1px">
+                            <center><h1>Trending Topics</h1></center>
+                            <hr/>
+                            {% set count=0 %}
+                            {% for thread in threads if count<10 %}
+                                <center>
+                                    <a href="{{path('portal_thread',{'threadid':thread[0].id,'currentforum':currentforum,'frompage':'homepage'})}}?id=0">{{thread[0].thdSubject}}</a>
+                                    <hr style="width: 80%;"/>
+                                </center>
+                                {% set count=count+1 %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="span2 pull-right" style="border-style: solid; border-width: 1px">
+                            <center><h1>ADS Here</h1></center>
+                        </div>
+                    </div>
+
+                    <!--This section commented for now-->
+                    <!--This is the container for the most subscribers and the moderators-->
+                    <!--<div class="row-fluid" style="border-style: solid; border-width: 1px">
+
+                    </div>-->
+                </div>
+	    	</div>
+
+            <div clas
+     	</div>
+	</div>
+{% endblock %}

@@ -1,3 +1,7 @@
+portal_frontpage:
+    path:     /portal/frontpage/{currentforum}
+    defaults: { _controller: PortalBundle:Portal:frontpage }
+
 portal_homepage:
     path:     /portal/main/{currentforum}
     defaults: { _controller: PortalBundle:Portal:main }
