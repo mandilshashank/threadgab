@@ -7,9 +7,10 @@
 	  	<div class="row-fluid">
 	    	<div class="span2 pull-left">
 	   	 		<div id="sidebar-wrapper" >
-			        <ul class="sidebar-nav" id="sidebar">     
+			        <ul class="sidebar-nav" id="sidebar">
+                      <li><a href="{{path('portal_homepage',{'currentforum':currentforum})}}"><b>Friends</b><span class="sub_icon glyphicon glyphicon-link"></span></a></li>
 			          {% for forum in subforum %}
-			          <li><a href="{{path('portal_homepage',{'currentforum':forum.subForumName})}}">{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+			          <li><a href="{{path('portal_global',{'currentforum':forum.subForumName})}}">{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
 			          {% endfor %}
 			        </ul>
 			    </div>
@@ -21,16 +22,16 @@
 
 	    	<div class="container">
 			  	<div class="masthead">
-			  		<h3 class="muted">{{currentforum}}</h3>
+			  		<h3 class="muted">Friend Threads</h3>
 			    	<div class="navbar">
 			  			<div class="navbar-inner">
 			    			<div class="container">
 			      			<ul class="nav">
-			        	    <li class="active"><a href="{{path('portal_homepage',{'currentforum':currentforum})}}">Friend Threads</a></li>
-		                    <li><a href="{{path('portal_community',{'currentforum':currentforum})}}">Community Threads</a> </li>
+			        	    {#<li class="active"><a href="{{path('portal_homepage',{'currentforum':currentforum})}}">Friend Threads</a></li>#}
 		                    <li><a href="{{path('portal_global',{'currentforum':currentforum})}}">Global Threads</a></li>
+                            <li><a href="{{path('portal_community',{'currentforum':currentforum})}}">Community Threads</a> </li>
 		                    <li><a href="{{path('portal_subscribed',{'currentforum':currentforum})}}">Subscribed Threads</a></li>
-			          	</ul>
+			          	    </ul>
 			        	</div>
 			        </div>
 			      </div><!-- /.navbar -->

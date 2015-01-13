@@ -53,19 +53,7 @@ class PortalController extends Controller
             array_push($facebook_ids, $user_profile->getId());
 
             //Execute the query to select the thread entities which are created by users with
-            //the facebook ids present in the above facebook_ids array   
-
-            //TBD : Check why this doesnt work and the following works
-            /*$em = $this->getDoctrine()->getManager();
-            $query = $em->createQuery(
-                "SELECT t
-                FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
-                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
-                WITH t.thdCreator = u.id
-                WHERE u.facebookid in (:fdId)
-                ORDER BY t.createdAt"
-            );
-            $query->setParameter("fbId",implode(',', $facebook_ids));*/
+            //the facebook ids present in the above facebook_ids array
 
             $em = $this->getDoctrine()->getManager();
             
@@ -75,11 +63,8 @@ class PortalController extends Controller
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.thdCreator = u.id
-                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum v
-                WITH t.thdSubforum = v.id
                 WHERE u.facebookid in (".implode(',', $facebook_ids).")
                     and (t.thdIsfriend='1')
-                    and v.subForumName='".$currentforum."'
                 ORDER BY t.updatedAt desc"
             );
 
@@ -92,10 +77,10 @@ class PortalController extends Controller
             $threads = $query->getResult();
             $subforum  = $query_subforum->getResult();
 
-                //Render the friends thread for each of the friends and yourself
-        		return $this->render('PortalBundle:Portal:main.html.twig', 
-                    array('threads' => $threads, 'subforum' => $subforum,
-                        'currentforum' => $currentforum));
+            //Render the friends thread for each of the friends and yourself
+            return $this->render('PortalBundle:Portal:main.html.twig',
+                array('threads' => $threads, 'subforum' => $subforum
+                    , 'currentforum'=>$currentforum));
 
 		} else {
 			//Session not found. Take to a common error page
@@ -127,8 +112,6 @@ class PortalController extends Controller
                 FROM Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabThread t
                 INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser u
                 WITH t.thdCreator = u.id
-                INNER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabSubforum v
-                WITH t.thdSubforum = v.id
                 LEFT OUTER JOIN Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply r
                 WITH r.thd = t.id
                 WHERE t.thdIsglobal='1'
@@ -223,7 +206,7 @@ class PortalController extends Controller
                 WITH t.thdSubforum = w.id
                 WHERE t.thdIsglobal='1' 
                     and w.subForumName='".$currentforum."'
-                ORDER BY t.updatedAt desc"
+                    ORDER BY t.updatedAt desc"
             );
 
             //Query to get all the subforums from the database

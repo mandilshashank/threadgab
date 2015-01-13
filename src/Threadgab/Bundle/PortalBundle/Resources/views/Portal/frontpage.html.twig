@@ -9,7 +9,9 @@
 	   	 		<div id="sidebar-wrapper" >
 			        <ul class="sidebar-nav" id="sidebar">     
 			          {% for forum in subforum %}
-			          <li><a href="{{path('portal_homepage',{'currentforum':forum.subForumName})}}">{{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+			          <li><a href="{{path('portal_homepage',{'currentforum':forum.subForumName})}}">
+                              {{forum.subForumName}}<span class="sub_icon glyphicon glyphicon-link"></span></a>
+                      </li>
 			          {% endfor %}
 			        </ul>
 			    </div>

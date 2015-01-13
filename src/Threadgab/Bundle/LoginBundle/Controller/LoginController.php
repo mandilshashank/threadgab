@@ -203,7 +203,7 @@ class LoginController extends Controller
 				//$url = $this->generateUrl('portal_homepage', array('currentforum' => $subforum[0]->getSubForumName()));
 				//	return $this->redirect($url);
 
-                $url = $this->generateUrl('portal_homepage', array('currentforum' => $subforum[0]->getSubForumName()));
+                $url = $this->generateUrl('portal_frontpage', array('currentforum' => $subforum[0]->getSubForumName()));
                 return $this->redirect($url);
 			}
 
