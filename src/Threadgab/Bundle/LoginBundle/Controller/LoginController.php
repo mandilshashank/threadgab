@@ -87,8 +87,9 @@ class LoginController extends Controller
     	$session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
     	if($session) {
 
-    		 $user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
-    		 $user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 100, 100)->asArray();
+    		$user_profile = ThreadgabLoginBundle::getFacebookProfile($session);
+            $user_raw_profile = ThreadgabLoginBundle::getFacebookRawProfile($session)->asArray();
+    		$user_profile_photo = ThreadgabLoginBundle::getFacebookPhoto($session, 100, 100)->asArray();
 
     		//Check in database if the user with this FacebookId already
     		//exists, other wise create a new user
@@ -112,6 +113,13 @@ class LoginController extends Controller
 		        $user->setCreationDate(date_create(date("Y-m-d H:i:s", time())));
 		        $user->setPhotoUrl($user_profile_photo["url"]);
 		        $user->setNumSub('0');
+                $user->setEmailid($user_raw_profile["email"]);
+
+                $ip = $_SERVER['REMOTE_ADDR'];
+                $details = json_decode(file_get_contents("http://www.telize.com/geoip"));
+                $zipcode = $details->postal_code;
+
+                $user->setZipcode($zipcode);
 
 		        $form = $this->createFormBuilder($user)
 		            ->add('emailid', 'text', array('label' => 'Email Id', 'attr' => array('class' => 'form-control')))
@@ -158,7 +166,7 @@ class LoginController extends Controller
                         $em->flush();
 
                         // Add the friend to the subscriber number of the user
-                        $user->setNumSub($friend->getNumSub()+1);
+                        $user->setNumSub($user->getNumSub()+1);
                         $em->persist($user);
                         $em->flush();
                     }

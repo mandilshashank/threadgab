@@ -96,7 +96,7 @@ class PortalController extends Controller
         if(!isset($_SESSION['fb_token']))
         {
             //Session not found. Take to a common error page
-            return new Response("FB Token not found at the Main portal Page. Please relogin into Facebook at the main website page");
+            return new Response("FB Token not found at the Front Page. Please relogin into Facebook at the main website page");
         }
 
         $session = ThreadgabLoginBundle::getSessionFromToken($_SESSION['fb_token']);
