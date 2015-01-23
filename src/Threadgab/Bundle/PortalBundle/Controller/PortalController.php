@@ -546,7 +546,7 @@ class PortalController extends Controller
                         //End Upload the document
 
                         //Save the new filepath into the reply database
-                        $new_reply->setReplyImagePath($final_target_file);
+                        $new_reply->setReplyImagePath("/uploads/documents/".$new_image_name);
                     }
 
                     //Persist the reply to the database

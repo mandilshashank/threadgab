@@ -19,6 +19,9 @@
                     </a> said :
                     <br/>{{parentreply.readData|raw}}
                     {#Todo: Show the photo in the reply#}
+                    {% if reply.getReplyImagePath is not null %}
+                        <img src="{{ parentreply.getReplyImagePath }}" height="200" width="200"/>
+                    {% endif %}
                     </center>
                 </div>
             {% endif %}
@@ -161,6 +164,9 @@
                             {% endif %}
                             <br/>{{reply.readData|raw}}
                             {#Todo: Show the photo in the reply#}
+                                {% if reply.getReplyImagePath is not null %}
+                                    <img src="{{ reply.getReplyImagePath }}" height="200" width="200"/>
+                                {% endif %}
                             </center>
                         </div>
 
