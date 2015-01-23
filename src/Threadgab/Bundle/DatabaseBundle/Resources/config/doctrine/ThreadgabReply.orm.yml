@@ -42,6 +42,13 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabReply:
             nullable: true
             comment: ''
             column: updated_at
+        replyImagePath:
+            type: string
+            nullable: true
+            length: 500
+            fixed: false
+            comment: ''
+            column: reply_image_path
     manyToOne:
         thd:
             targetEntity: ThreadgabThread

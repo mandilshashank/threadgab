@@ -113,5 +113,6 @@
         {% endblock %}
     </body>
 
-    {{ tinymce_init() }}
+    {#{{ tinymce_init() }}#}
+    {{ tinymce_init({'theme': {'simple': {'menubar': false}}}) }}
 </html>

@@ -14,11 +14,11 @@
                         {{ _self.printParentReplies(replies,parentreply,count+1) }}
                     {% endif %}
 
-                    {# TODO:Change the someone to the user's name #}
                     <a href="{{path('portal_profile_user',{'userid':parentreply.replyUser.getId})}}">
                         {% if parentreply.replyUser.getName is not empty %}{{ parentreply.replyUser.getName }}{% else %}Someone{% endif %}
                     </a> said :
                     <br/>{{parentreply.readData|raw}}
+                    {#Todo: Show the photo in the reply#}
                     </center>
                 </div>
             {% endif %}
@@ -111,7 +111,7 @@
           </div>
       {% endif %}
     </div>
-     
+
     {% import _self as macros %}
 
     {% if replies|length > 0 %}
@@ -160,6 +160,7 @@
                                 {{ macros.printParentReplies(replies,reply,1) }}
                             {% endif %}
                             <br/>{{reply.readData|raw}}
+                            {#Todo: Show the photo in the reply#}
                             </center>
                         </div>
 
@@ -214,12 +215,21 @@
                 </div>
             </div>
         {% endfor %}
-    {% endif %}  
+    {% endif %}
   </div>
 
-  <form method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?mainid=real">
-    {{form(form)}}
+  <form method='POST'
+        action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?mainid=real"
+        enctype="multipart/form-data">
+          {#{{ form_enctype(form_document) }}>#}
+    {{form_row(form.replyData)}}
+    Attach Image : <input type="file" name="fileToUpload" id="fileToUpload">
+    {#{{form_row(form_document.file)}}#}
+    {{form_row(form.save)}}
+    {{form_end(form)}}
   </form>
+
+
 
   <div class="footer">
       <p>&copy; ThreadGab.com 2014</p>

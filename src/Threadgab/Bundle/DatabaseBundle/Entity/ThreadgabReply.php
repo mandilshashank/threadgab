@@ -227,4 +227,33 @@ class ThreadgabReply
         rewind($this->getReplyData());
         return $reply_data;
     }
+
+    /**
+     * @var string
+     */
+    private $replyImagePath;
+
+
+    /**
+     * Set replyImagePath
+     *
+     * @param string $replyImagePath
+     * @return ThreadgabReply
+     */
+    public function setReplyImagePath($replyImagePath)
+    {
+        $this->replyImagePath = $replyImagePath;
+
+        return $this;
+    }
+
+    /**
+     * Get replyImagePath
+     *
+     * @return string 
+     */
+    public function getReplyImagePath()
+    {
+        return $this->replyImagePath;
+    }
 }
