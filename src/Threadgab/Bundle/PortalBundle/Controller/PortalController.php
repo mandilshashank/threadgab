@@ -598,6 +598,64 @@ class PortalController extends Controller
                         $dynamic_reply->setReplyTo($_POST['reply_to_' . $form_id]);
                         $dynamic_reply->setReplyData($_POST['textarea_' . $form_id]);
 
+                        if($_FILES["fileToUpload_".$form_id]["name"]!="") {
+
+                            //Generate a new unique filename for the upload
+                            $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/uploads/documents/";
+                            $target_file = $target_dir . $_FILES["fileToUpload_".$form_id]["name"];
+                            $new_image_name = 'image_' . date('Y-m-d-H-i-s') . '_' . uniqid() . '.' . pathinfo($target_file, PATHINFO_EXTENSION);
+                            //End Generate a new unique filename for the image
+
+                            //Upload the document
+                            $final_target_file = $target_dir . $new_image_name;
+                            $uploadOk = 1;
+                            $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+                            // Check if image file is a actual image or fake image
+                            if (isset($_POST["submit"])) {
+                                $check = getimagesize($_FILES["fileToUpload_".$form_id]["tmp_name"]);
+                                if ($check !== false) {
+//                                var_dump( "File is an image - " . $check["mime"] . ".");
+                                    $uploadOk = 1;
+                                } else {
+//                                var_dump( "File is not an image.");
+                                    $uploadOk = 0;
+                                }
+                            }
+
+                            // Check if file already exists
+                            if (file_exists($final_target_file)) {
+//                            var_dump( "Sorry, file already exists.");
+                                $uploadOk = 0;
+                            }
+                            // Check file size
+                            if ($_FILES["fileToUpload_".$form_id]["size"] > 50000000) {
+//                            var_dump( "Sorry, your file is too large.");
+                                $uploadOk = 0;
+                            }
+                            // Allow certain file formats
+                            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                                && $imageFileType != "gif"
+                            ) {
+//                            var_dump( "Sorry, only JPG, JPEG, PNG & GIF files are allowed.");
+                                $uploadOk = 0;
+                            }
+
+                            //Todo : Convert all errors into meaningful display messages
+
+                            // Check if $uploadOk is set to 0 by an error
+                            if ($uploadOk == 1) {
+                                if (move_uploaded_file($_FILES["fileToUpload_".$form_id]["tmp_name"], $final_target_file)) {
+//                                var_dump( "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.");
+                                } else {
+//                                var_dump( "Sorry, there was an error uploading your file.");
+                                }
+                            }
+                            //End Upload the document
+
+                            //Save the new filepath into the reply database
+                            $dynamic_reply->setReplyImagePath("/uploads/documents/".$new_image_name);
+                        }
+
                         $em = $this->getDoctrine()->getManager();
                         $em->persist($dynamic_reply);
                         $em->flush();

@@ -18,7 +18,7 @@
                         {% if parentreply.replyUser.getName is not empty %}{{ parentreply.replyUser.getName }}{% else %}Someone{% endif %}
                     </a> said :
                     <br/>{{parentreply.readData|raw}}
-                    {#Todo: Show the photo in the reply#}
+                    {#Show the photo in the reply#}
                     {% if reply.getReplyImagePath is not null %}
                         <img src="{{ parentreply.getReplyImagePath }}" height="200" width="200"/>
                     {% endif %}
@@ -163,7 +163,7 @@
                                 {{ macros.printParentReplies(replies,reply,1) }}
                             {% endif %}
                             <br/>{{reply.readData|raw}}
-                            {#Todo: Show the photo in the reply#}
+                            {#Show the photo in the reply#}
                                 {% if reply.getReplyImagePath is not null %}
                                     <img src="{{ reply.getReplyImagePath }}" height="200" width="200"/>
                                 {% endif %}
@@ -199,8 +199,13 @@
 
                     <div id="div_{{reply.id}}" class="hidden" align="center">
                     <!--Reply form to reply to specific reply-->
-                        <form id="form_{{reply.id}}" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?id={{reply.id}}">
+                        <form id="form_{{reply.id}}"
+                              method='POST'
+                              action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?id={{reply.id}}"
+                              enctype="multipart/form-data">
                         <textarea class="tinymce" id="textarea_{{reply.id}}" name="textarea_{{reply.id}}"></textarea>
+                        {#Add functionality to attach image in a reply to a reply#}
+                        Attach Image : <input type="file" name="fileToUpload_{{reply.id}}" id="fileToUpload_{{reply.id}}"><br/>
                         <input type="hidden" id="reply_to_{{reply.id}}" name="reply_to_{{reply.id}}" value="{{reply.id}}">
                         <input type="submit" id="button_{{reply.id}}" name="button_{{reply.id}}" value="Submit"/>
                         </form>
@@ -213,6 +218,9 @@
                             <form id="form_{{reply.id}}_edit" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?id={{reply.id}}">
                                 <textarea class="tinymce" id="textarea_{{reply.id}}_edit" name="textarea_{{reply.id}}_edit">{{reply.readData|raw}}</textarea>
                                 <input type="hidden" id="reply_to_{{reply.id}}_edit" name="reply_to_{{reply.id}}_edit" value="{{reply.id}}">
+                                {#Todo: If the image is present show a button to remove image.
+                                        After remove is clicked show a button to add image
+                                        Else if image is not present show button to add image#}
                                 <input type="hidden" id="edit_reply" name="edit_reply" value="edit_reply"/>
                                 <input type="submit" id="button_{{reply.id}}_edit" name="button_{{reply.id}}_edit" value="Submit"/>
                             </form>
