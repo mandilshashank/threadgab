@@ -106,6 +106,8 @@ class LoginController extends Controller
 			if(!$users) {
 				$user = new ThreadgabUser();
 
+                //Add the lat and long for a user based on his/her current location
+
 	    		//This is the facebook Id. This Id will be used for matching the user to
 	    		// the Threadgab Id when the user logs in through facebook.	
 		        $user->setFacebookId($user_profile->getId());
@@ -114,6 +116,10 @@ class LoginController extends Controller
 		        $user->setPhotoUrl($user_profile_photo["url"]);
 		        $user->setNumSub('0');
                 $user->setEmailid($user_raw_profile["email"]);
+
+                $lat_lng = ThreadgabLoginBundle::getLatLong();
+                $user->setLat(floatval($lat_lng['lat']));
+                $user->setLng(floatval($lat_lng['lng']));
 
                 $ip = $_SERVER['REMOTE_ADDR'];
                 $details = json_decode(file_get_contents("http://www.telize.com/geoip"));
@@ -193,6 +199,13 @@ class LoginController extends Controller
 			} else {
 				$users[0]->setPhotoUrl($user_profile_photo["url"]);
                 $users[0]->setName($user_profile->getName());
+
+                if($users[0]->getLat()==0 || $users[0]->getLng()==0){
+                    $lat_lng = ThreadgabLoginBundle::getLatLong();
+                    $users[0]->setLat(floatval($lat_lng['lat']));
+                    $users[0]->setLng(floatval($lat_lng['lng']));
+                }
+
 				$em = $this->getDoctrine()->getManager();
 			    $em->persist($users[0]);
 			    $em->flush();

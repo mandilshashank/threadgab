@@ -265,4 +265,60 @@ class ThreadgabUser
     {
         return $this->name;
     }
+    /**
+     * @var float
+     */
+    private $lat;
+
+    /**
+     * @var float
+     */
+    private $lng;
+
+
+    /**
+     * Set lat
+     *
+     * @param float $lat
+     * @return ThreadgabUser
+     */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    /**
+     * Get lat
+     *
+     * @return float 
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * Set lng
+     *
+     * @param float $lng
+     * @return ThreadgabUser
+     */
+    public function setLng($lng)
+    {
+        $this->lng = $lng;
+
+        return $this;
+    }
+
+    /**
+     * Get lng
+     *
+     * @return float 
+     */
+    public function getLng()
+    {
+        return $this->lng;
+    }
 }

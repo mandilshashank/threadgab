@@ -218,7 +218,7 @@
                             <form id="form_{{reply.id}}_edit" method='POST' action="{{path('portal_thread',{'threadid':threads.id,'currentforum':currentforum,'frompage':frompage})}}?id={{reply.id}}">
                                 <textarea class="tinymce" id="textarea_{{reply.id}}_edit" name="textarea_{{reply.id}}_edit">{{reply.readData|raw}}</textarea>
                                 <input type="hidden" id="reply_to_{{reply.id}}_edit" name="reply_to_{{reply.id}}_edit" value="{{reply.id}}">
-                                {#Todo: If the image is present show a button to remove image.
+                                {#  Todo: If the image is present show a button to remove image.
                                         After remove is clicked show a button to add image
                                         Else if image is not present show button to add image#}
                                 <input type="hidden" id="edit_reply" name="edit_reply" value="edit_reply"/>

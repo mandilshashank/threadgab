@@ -62,4 +62,18 @@ Threadgab\Bundle\DatabaseBundle\Entity\ThreadgabUser:
             length: 100
             fixed: false
             comment: ''
+        lat:
+            type: float
+            nullable: true
+            precision: 10
+            scale: 0
+            comment: ''
+            default: '0'
+        lng:
+            type: float
+            nullable: true
+            precision: 10
+            scale: 0
+            comment: ''
+            default: '0'
     lifecycleCallbacks: {  }
